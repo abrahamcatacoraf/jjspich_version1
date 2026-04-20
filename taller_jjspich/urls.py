@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('clientes/', include('clientes.urls')),
     path('vehiculos/', include('vehiculos.urls')),
+    path('ordenes/', include('ordenes.urls')),
 ]
