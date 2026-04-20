@@ -1,0 +1,52 @@
+{% extends 'base/base.html' %}
+{% block titulo %}Dashboard — JJ SPICH{% endblock %}
+{% block subtitulo %}Panel principal{% endblock %}
+{% block nav_inicio %}active{% endblock %}
+
+{% block contenido %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h4>Bienvenido al sistema JJ SPICH</h4>
+    <p class="text-muted">Taller de Chapa y Pintura</p>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center">
+        <i class="bi bi-people fs-1 text-primary"></i>
+        <h3 class="mt-2">{{ total_clientes }}</h3>
+        <p class="text-muted mb-0">Clientes</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center">
+        <i class="bi bi-car-front fs-1 text-success"></i>
+        <h3 class="mt-2">{{ total_vehiculos }}</h3>
+        <p class="text-muted mb-0">Vehículos</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center">
+        <i class="bi bi-clipboard-check fs-1 text-warning"></i>
+        <h3 class="mt-2">{{ total_ordenes }}</h3>
+        <p class="text-muted mb-0">Órdenes activas</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center">
+        <i class="bi bi-cash-coin fs-1 text-danger"></i>
+        <h3 class="mt-2">{{ total_pagos }}</h3>
+        <p class="text-muted mb-0">Pagos del mes</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
