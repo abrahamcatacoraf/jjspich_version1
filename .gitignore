@@ -1,0 +1,18 @@
+# Entorno virtual - nunca se sube a Git
+venv/
+# Base de datos local
+*.sqlite3
+# Archivos de Python compilados
+__pycache__/
+*.pyc
+*.pyo
+# Archivos estáticos generados
+staticfiles/
+# Variables de entorno y contraseñas
+.env
+*.env
+# VS Code
+.vscode/
+# Windows
+Thumbs.db
+Desktop.ini
