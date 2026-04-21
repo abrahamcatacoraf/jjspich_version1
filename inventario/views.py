@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Insumo
 from .forms import InsumoForm, AjusteStockForm
 
+@login_required
 def lista_inventario(request):
     categoria = request.GET.get('categoria', '')
     busqueda  = request.GET.get('buscar', '')
@@ -17,6 +19,7 @@ def lista_inventario(request):
         'busqueda':  busqueda,
     })
 
+@login_required
 def nuevo_insumo(request):
     if request.method == 'POST':
         form = InsumoForm(request.POST)
@@ -30,6 +33,7 @@ def nuevo_insumo(request):
         'form': form, 'titulo': 'Nuevo Insumo'
     })
 
+@login_required
 def editar_insumo(request, pk):
     insumo = get_object_or_404(Insumo, pk=pk)
     if request.method == 'POST':
@@ -44,6 +48,7 @@ def editar_insumo(request, pk):
         'form': form, 'titulo': f'Editar {insumo.nombre}'
     })
 
+@login_required
 def ajustar_stock(request, pk):
     insumo = get_object_or_404(Insumo, pk=pk)
     if request.method == 'POST':
@@ -68,6 +73,7 @@ def ajustar_stock(request, pk):
         'form': form, 'insumo': insumo
     })
 
+@login_required
 def eliminar_insumo(request, pk):
     insumo = get_object_or_404(Insumo, pk=pk)
     if request.method == 'POST':

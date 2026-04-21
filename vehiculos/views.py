@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Vehiculo
 from .forms import VehiculoForm
 
+@login_required
 def lista_vehiculos(request):
     busqueda = request.GET.get('buscar', '')
     if busqueda:
@@ -20,6 +22,7 @@ def lista_vehiculos(request):
         'busqueda': busqueda
     })
 
+@login_required
 def nuevo_vehiculo(request):
     if request.method == 'POST':
         form = VehiculoForm(request.POST)
@@ -34,6 +37,7 @@ def nuevo_vehiculo(request):
         'titulo': 'Nuevo Vehículo'
     })
 
+@login_required
 def editar_vehiculo(request, pk):
     vehiculo = get_object_or_404(Vehiculo, pk=pk)
     if request.method == 'POST':
@@ -49,6 +53,7 @@ def editar_vehiculo(request, pk):
         'titulo': 'Editar Vehículo'
     })
 
+@login_required
 def eliminar_vehiculo(request, pk):
     vehiculo = get_object_or_404(Vehiculo, pk=pk)
     if request.method == 'POST':

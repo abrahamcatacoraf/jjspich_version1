@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from .models import Pago
 from .forms import PagoForm
 from ordenes.models import Orden
 
+@login_required
 def lista_pagos(request):
     pagos = Pago.objects.all().select_related('orden', 'orden__cliente')
     total_mes = Pago.objects.filter(
@@ -15,6 +17,7 @@ def lista_pagos(request):
         'total_mes': total_mes,
     })
 
+@login_required
 def nuevo_pago(request):
     if request.method == 'POST':
         form = PagoForm(request.POST)
@@ -28,6 +31,7 @@ def nuevo_pago(request):
         'form': form, 'titulo': 'Registrar Pago'
     })
 
+@login_required
 def detalle_orden_pagos(request, orden_pk):
     orden  = get_object_or_404(Orden, pk=orden_pk)
     pagos  = Pago.objects.filter(orden=orden)
@@ -40,6 +44,7 @@ def detalle_orden_pagos(request, orden_pk):
         'saldo_pendiente': saldo_pendiente,
     })
 
+@login_required
 def eliminar_pago(request, pk):
     pago = get_object_or_404(Pago, pk=pk)
     if request.method == 'POST':

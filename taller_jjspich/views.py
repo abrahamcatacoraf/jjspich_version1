@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 import datetime
 from clientes.models import Cliente
@@ -7,6 +8,7 @@ from ordenes.models import Orden
 from inventario.models import Insumo
 from pagos.models import Pago
 
+@login_required
 def dashboard(request):
     mes_actual = datetime.datetime.now().month
     total_pagos_mes = Pago.objects.filter(
