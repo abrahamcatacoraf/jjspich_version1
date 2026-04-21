@@ -17,4 +17,10 @@ urlpatterns = [
     path('ordenes/', include('ordenes.urls')),
     path('inventario/', include('inventario.urls')),
     path('pagos/', include('pagos.urls')),
+
+    # Reportes
+    path('reportes/', views.vista_reportes, name='reportes'),
+    path('reportes/pdf/ordenes/', views.pdf_ordenes, name='pdf_ordenes'),
+    path('reportes/pdf/pagos/', views.pdf_pagos, name='pdf_pagos'),
+    path('reportes/pdf/inventario/', views.pdf_inventario, name='pdf_inventario'),
 ]
