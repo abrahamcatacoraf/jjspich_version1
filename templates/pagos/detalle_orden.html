@@ -1,0 +1,88 @@
+{% extends 'base/base.html' %}
+{% block titulo %}Pagos Orden #{{ orden.pk }} — JJ SPICH{% endblock %}
+{% block subtitulo %}Pagos de Orden #{{ orden.pk }}{% endblock %}
+{% block nav_pagos %}active{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0">Pagos — Orden #{{ orden.pk }}</h4>
+  <a href="{% url 'nuevo_pago' %}" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-1"></i> Registrar pago
+  </a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center py-3">
+        <p class="text-muted mb-1">Costo total</p>
+        <h4 class="mb-0">Bs. {{ orden.costo_estimado }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center py-3">
+        <p class="text-muted mb-1">Total pagado</p>
+        <h4 class="text-success mb-0">Bs. {{ total_pagado }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center py-3">
+        <p class="text-muted mb-1">Saldo pendiente</p>
+        <h4 class="{% if saldo_pendiente > 0 %}text-danger{% else %}text-success{% endif %} mb-0">
+          Bs. {{ saldo_pendiente }}
+        </h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Monto</th>
+          <th>Método</th>
+          <th>Tipo</th>
+          <th>Fecha</th>
+          <th>Observación</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pago in pagos %}
+        <tr>
+          <td><strong class="text-success">Bs. {{ pago.monto }}</strong></td>
+          <td>{{ pago.get_metodo_display }}</td>
+          <td>
+            {% if pago.es_adelanto %}
+              <span class="badge bg-warning text-dark">Adelanto</span>
+            {% else %}
+              <span class="badge bg-success">Pago final</span>
+            {% endif %}
+          </td>
+          <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
+          <td>{{ pago.observacion|default:"—" }}</td>
+          <td class="text-center">
+            <a href="{% url 'eliminar_pago' pago.pk %}"
+               class="btn btn-sm btn-outline-danger">
+              <i class="bi bi-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center text-muted py-4">
+            No hay pagos para esta orden todavía.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
