@@ -41,12 +41,14 @@
       <a href="/inventario/" class="nav-link {% block nav_inventario %}{% endblock %}">
         <i class="bi bi-box-seam me-2"></i>Inventario
       </a>
+      {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
       <a href="/pagos/" class="nav-link {% block nav_pagos %}{% endblock %}">
         <i class="bi bi-cash-coin me-2"></i>Pagos
       </a>
       <a href="/reportes/" class="nav-link {% block nav_reportes %}{% endblock %}">
         <i class="bi bi-file-earmark-pdf me-2"></i>Reportes
       </a>
+      {% endif %}
     </nav>
     <div class="mt-auto p-3" style="border-top:1px solid #333;">
       <a href="/admin/" class="nav-link text-warning mb-2">

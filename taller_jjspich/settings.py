@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'ordenes',
     'inventario',
     'pagos',
+    'taller_jjspich',
 ]
 
 MIDDLEWARE = [

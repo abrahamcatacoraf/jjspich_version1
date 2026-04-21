@@ -2,6 +2,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from . import views
+from django.shortcuts import render
+
+def sin_permiso(request):
+    return render(request, 'base/sin_permiso.html')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +27,6 @@ urlpatterns = [
     path('reportes/pdf/ordenes/', views.pdf_ordenes, name='pdf_ordenes'),
     path('reportes/pdf/pagos/', views.pdf_pagos, name='pdf_pagos'),
     path('reportes/pdf/inventario/', views.pdf_inventario, name='pdf_inventario'),
+
+    path('sin-permiso/', sin_permiso, name='sin_permiso'),
 ]
