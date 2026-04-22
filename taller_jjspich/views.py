@@ -25,6 +25,10 @@ def dashboard(request):
         'total_insumos':   Insumo.objects.count(),
         'stock_bajo':      Insumo.objects.filter(cantidad__lte=5).count(),
         'total_pagos_mes': total_pagos_mes,
+        'ultimas_ordenes': Orden.objects.all().order_by('-fecha_ingreso')[:5],
+        'insumos_criticos': Insumo.objects.filter(
+                                cantidad__lte=5
+                            ).order_by('cantidad')[:5],
     }
     return render(request, 'base/dashboard.html', context)
 

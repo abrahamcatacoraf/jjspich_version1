@@ -4,88 +4,183 @@
 {% block nav_inicio %}active{% endblock %}
 
 {% block contenido %}
-<div class="row mb-4">
-  <div class="col-12">
-    <h4>Bienvenido al sistema JJ SPICH</h4>
-    <p class="text-muted">Taller de Chapa y Pintura — La Paz, Bolivia</p>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-3 col-6">
+    <div class="card">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="text-muted mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:1px;">Clientes</p>
+            <h2 class="fw-bold mb-0" style="font-size:2rem;">{{ total_clientes }}</h2>
+          </div>
+          <div style="width:48px;height:48px;background:#fff3e0;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+            <i class="bi bi-people" style="font-size:22px;color:#f97316;"></i>
+          </div>
+        </div>
+        <a href="/clientes/" class="text-decoration-none" style="font-size:12px;color:#f97316;">
+          Ver todos <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-6">
+    <div class="card">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="text-muted mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:1px;">Vehículos</p>
+            <h2 class="fw-bold mb-0" style="font-size:2rem;">{{ total_vehiculos }}</h2>
+          </div>
+          <div style="width:48px;height:48px;background:#fce8e8;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+            <i class="bi bi-car-front" style="font-size:22px;color:#dc2626;"></i>
+          </div>
+        </div>
+        <a href="/vehiculos/" class="text-decoration-none" style="font-size:12px;color:#dc2626;">
+          Ver todos <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-6">
+    <div class="card">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="text-muted mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:1px;">Órdenes activas</p>
+            <h2 class="fw-bold mb-0" style="font-size:2rem;">{{ total_ordenes }}</h2>
+          </div>
+          <div style="width:48px;height:48px;background:#fff8e1;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+            <i class="bi bi-clipboard-check" style="font-size:22px;color:#f59e0b;"></i>
+          </div>
+        </div>
+        <a href="/ordenes/" class="text-decoration-none" style="font-size:12px;color:#f59e0b;">
+          Ver todas <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-6">
+    <div class="card">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <p class="text-muted mb-1" style="font-size:12px;text-transform:uppercase;letter-spacing:1px;">Ingresos del mes</p>
+            <h2 class="fw-bold mb-0" style="font-size:1.6rem;">Bs.{{ total_pagos_mes }}</h2>
+          </div>
+          <div style="width:48px;height:48px;background:#e8f5e9;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+            <i class="bi bi-cash-coin" style="font-size:22px;color:#16a34a;"></i>
+          </div>
+        </div>
+        <a href="/pagos/" class="text-decoration-none" style="font-size:12px;color:#16a34a;">
+          Ver pagos <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
   </div>
 </div>
-
-<div class="row g-3 mb-4">
-  <div class="col-md-3 col-6">
-    <div class="card border-0 shadow-sm h-100">
-      <div class="card-body text-center py-4">
-        <i class="bi bi-people fs-1 text-primary"></i>
-        <h2 class="mt-2 mb-0">{{ total_clientes }}</h2>
-        <p class="text-muted mb-0 mt-1">Clientes</p>
-      </div>
-      <div class="card-footer bg-white border-0 text-center pb-3">
-        <a href="/clientes/" class="btn btn-sm btn-outline-primary">Ver todos</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-3 col-6">
-    <div class="card border-0 shadow-sm h-100">
-      <div class="card-body text-center py-4">
-        <i class="bi bi-car-front fs-1 text-success"></i>
-        <h2 class="mt-2 mb-0">{{ total_vehiculos }}</h2>
-        <p class="text-muted mb-0 mt-1">Vehículos</p>
-      </div>
-      <div class="card-footer bg-white border-0 text-center pb-3">
-        <a href="/vehiculos/" class="btn btn-sm btn-outline-success">Ver todos</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-3 col-6">
-    <div class="card border-0 shadow-sm h-100">
-      <div class="card-body text-center py-4">
-        <i class="bi bi-clipboard-check fs-1 text-warning"></i>
-        <h2 class="mt-2 mb-0">{{ total_ordenes }}</h2>
-        <p class="text-muted mb-0 mt-1">Órdenes activas</p>
-      </div>
-      <div class="card-footer bg-white border-0 text-center pb-3">
-        <a href="/ordenes/" class="btn btn-sm btn-outline-warning">Ver todas</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-3 col-6">
-    <div class="card border-0 shadow-sm h-100">
-      <div class="card-body text-center py-4">
-        <i class="bi bi-box-seam fs-1 text-info"></i>
-        <h2 class="mt-2 mb-0">{{ total_insumos }}</h2>
-        <p class="text-muted mb-0 mt-1">Insumos en stock</p>
-      </div>
-      <div class="card-footer bg-white border-0 text-center pb-3">
-        <a href="/inventario/" class="btn btn-sm btn-outline-info">Ver inventario</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="col-md-3 col-6">
-    <div class="card border-0 shadow-sm h-100">
-      <div class="card-body text-center py-4">
-        <i class="bi bi-cash-coin fs-1 text-danger"></i>
-        <h2 class="mt-2 mb-0">Bs. {{ total_pagos_mes }}</h2>
-        <p class="text-muted mb-0 mt-1">Ingresos del mes</p>
-      </div>
-      <div class="card-footer bg-white border-0 text-center pb-3">
-        <a href="/pagos/" class="btn btn-sm btn-outline-danger">Ver pagos</a>
-      </div>
-    </div>
-  </div>
 
 {% if stock_bajo > 0 %}
-<div class="alert alert-warning d-flex align-items-center" role="alert">
+<div class="alert d-flex align-items-center mb-4"
+     style="background:#fff3e0;color:#c2410c;border-left:4px solid #f97316 !important;">
   <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
   <div>
-    <strong>Alerta de stock:</strong> Hay {{ stock_bajo }} insumo{{ stock_bajo|pluralize }} con stock bajo.
-    <a href="/inventario/" class="alert-link ms-1">Revisar inventario</a>
+    <strong>Alerta de inventario:</strong>
+    Hay {{ stock_bajo }} insumo{{ stock_bajo|pluralize }} con stock bajo.
+    <a href="/inventario/" style="color:#f97316;" class="fw-semibold ms-1">Revisar ahora</a>
   </div>
 </div>
 {% endif %}
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-semibold">Últimas órdenes</h6>
+        <a href="/ordenes/" class="btn btn-sm btn-primary">Ver todas</a>
+      </div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Cliente</th>
+              <th>Estado</th>
+              <th>Costo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for orden in ultimas_ordenes %}
+            <tr>
+              <td><strong>#{{ orden.pk }}</strong></td>
+              <td>{{ orden.cliente }}</td>
+              <td>
+                {% if orden.estado == 'recibido' %}
+                  <span class="badge bg-info text-dark">Recibido</span>
+                {% elif orden.estado == 'en_proceso' %}
+                  <span class="badge bg-warning text-dark">En proceso</span>
+                {% elif orden.estado == 'terminado' %}
+                  <span class="badge bg-success">Terminado</span>
+                {% else %}
+                  <span class="badge bg-secondary">Entregado</span>
+                {% endif %}
+              </td>
+              <td>Bs. {{ orden.costo_estimado }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center text-muted py-3">
+                No hay órdenes aún
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0 fw-semibold">Insumos con stock bajo</h6>
+        <a href="/inventario/" class="btn btn-sm btn-primary">Ver inventario</a>
+      </div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>Insumo</th>
+              <th>Stock</th>
+              <th>Mínimo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for insumo in insumos_criticos %}
+            <tr>
+              <td>{{ insumo.nombre }}</td>
+              <td>
+                <span class="badge bg-danger">
+                  {{ insumo.cantidad }} {{ insumo.unidad }}
+                </span>
+              </td>
+              <td class="text-muted">{{ insumo.stock_minimo }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-center text-muted py-3">
+                Todo el stock está bien
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
