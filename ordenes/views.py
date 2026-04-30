@@ -1,14 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Orden
-from .forms import OrdenForm
+from .models import Orden, HistorialAdelanto
+from .forms import OrdenForm, AdelantoForm
 
 @login_required
 def lista_ordenes(request):
-    estado = request.GET.get('estado', '')
+    estado   = request.GET.get('estado', '')
     busqueda = request.GET.get('buscar', '')
-    ordenes = Orden.objects.all()
+    ordenes  = Orden.objects.all()
     if estado:
         ordenes = ordenes.filter(estado=estado)
     if busqueda:
@@ -18,8 +18,8 @@ def lista_ordenes(request):
             vehiculo__placa__icontains=busqueda
         )
     return render(request, 'ordenes/lista.html', {
-        'ordenes': ordenes,
-        'estado': estado,
+        'ordenes':  ordenes,
+        'estado':   estado,
         'busqueda': busqueda,
     })
 
@@ -28,36 +28,57 @@ def nueva_orden(request):
     if request.method == 'POST':
         form = OrdenForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Orden de trabajo registrada correctamente.')
+            orden = form.save()
+            # Registrar historial si hay adelanto
+            if orden.primer_adelanto > 0:
+                HistorialAdelanto.objects.create(
+                    orden=orden,
+                    usuario=request.user,
+                    accion='registro',
+                    monto=orden.primer_adelanto,
+                    observacion='Primer adelanto al crear la orden'
+                )
+            messages.success(request, 'Orden registrada correctamente.')
             return redirect('lista_ordenes')
     else:
         form = OrdenForm()
     return render(request, 'ordenes/form.html', {
-        'form': form,
-        'titulo': 'Nueva Orden de Trabajo'
+        'form': form, 'titulo': 'Nueva Orden de Trabajo'
     })
 
 @login_required
 def editar_orden(request, pk):
     orden = get_object_or_404(Orden, pk=pk)
+    adelanto_anterior = orden.primer_adelanto
     if request.method == 'POST':
         form = OrdenForm(request.POST, instance=orden)
         if form.is_valid():
-            form.save()
+            orden = form.save()
+            # Registrar historial si cambió el adelanto
+            if orden.primer_adelanto != adelanto_anterior:
+                HistorialAdelanto.objects.create(
+                    orden=orden,
+                    usuario=request.user,
+                    accion='edicion',
+                    monto=orden.primer_adelanto,
+                    observacion=f'Adelanto actualizado de Bs.{adelanto_anterior} a Bs.{orden.primer_adelanto}'
+                )
             messages.success(request, 'Orden actualizada correctamente.')
             return redirect('lista_ordenes')
     else:
         form = OrdenForm(instance=orden)
     return render(request, 'ordenes/form.html', {
-        'form': form,
-        'titulo': f'Editar Orden #{orden.pk}'
+        'form': form, 'titulo': f'Editar Orden #{orden.pk}'
     })
 
 @login_required
 def detalle_orden(request, pk):
-    orden = get_object_or_404(Orden, pk=pk)
-    return render(request, 'ordenes/detalle.html', {'orden': orden})
+    orden    = get_object_or_404(Orden, pk=pk)
+    historial = HistorialAdelanto.objects.filter(orden=orden)
+    return render(request, 'ordenes/detalle.html', {
+        'orden':    orden,
+        'historial': historial,
+    })
 
 @login_required
 def eliminar_orden(request, pk):
