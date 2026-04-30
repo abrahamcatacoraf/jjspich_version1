@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,43 +9,101 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-      background-color: #1a1a2e;
+      background-color: #0d0d0d;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      background-image: radial-gradient(circle at 20% 50%, #1a0000 0%, #0d0d0d 60%);
     }
+
     .login-card {
-      background: #fff;
-      border-radius: 16px;
+      background: #111111;
+      border-radius: 20px;
       padding: 2.5rem;
       width: 100%;
       max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
     }
-    .brand-icon {
-      width: 64px;
-      height: 64px;
-      background: #0f3460;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
+
+    .btn-primary {
+      background: #f97316 !important;
+      border-color: #f97316 !important;
+    }
+
+    .btn-primary:hover {
+      background: #ea6c0a !important;
+      border-color: #ea6c0a !important;
+    }
+
+    .input-group-text {
+      background: #1a1a1a;
+      border-color: #333;
+      border-right: none;
+      color: #888;
+    }
+
+    .form-control {
+      background: #1a1a1a;
+      border-color: #333;
+      border-left: none;
+      color: white;
+    }
+
+    .form-control::placeholder {
+      color: #555;
+    }
+
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #f97316;
+      background: #1a1a1a;
+      color: white;
+    }
+
+    .form-label {
+      color: #ccc;
+      font-weight: 600;
+    }
+
+    .text-muted {
+      color: #888 !important;
+    }
+
+    hr {
+      border-color: #2a2a2a;
+    }
+
+    .alert-danger {
+      background: #2a0000;
+      color: #f87171;
+      border: 1px solid #7f1d1d !important;
+    }
+
+    /* Forzar fondo oscuro en autocompletado del navegador */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset !important;
+      -webkit-text-fill-color: white !important;
+      border-color: #333 !important;
     }
   </style>
 </head>
 <body>
-  <div class="login-card shadow-lg">
+  <div class="login-card">
+
+    <!-- LOGO -->
     <div class="text-center mb-4">
-      <div class="brand-icon">
-        <i class="bi bi-wrench-adjustable text-white fs-3"></i>
-      </div>
-      <h4 class="fw-bold mb-1">JJ SPICH</h4>
-      <p class="text-muted small">Taller de Chapa y Pintura</p>
+      <img src="{% static 'img/logo_jjspich.png' %}"
+           alt="JJ SPICH"
+           style="width:180px; display:block; margin:0 auto 12px;">
+      <p class="text-muted small mb-0">Sistema de Gestión Automotriz</p>
+      <p class="text-muted small">La Paz, Bolivia</p>
     </div>
 
     {% if form.errors %}
-      <div class="alert alert-danger py-2">
+      <div class="alert alert-danger py-2 mb-3">
         <i class="bi bi-exclamation-circle me-1"></i>
         Usuario o contraseña incorrectos.
       </div>
@@ -68,14 +127,17 @@
                  placeholder="Tu contraseña" required>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary w-100 py-2">
+      <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
         <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar al sistema
       </button>
     </form>
 
-    <p class="text-center text-muted small mt-4 mb-0">
-      Sistema de gestión — La Paz, Bolivia
+    <hr class="my-4">
+    <p class="text-center text-muted small mb-0">
+      <i class="bi bi-shield-check me-1"></i>
+      Acceso restringido — Solo personal autorizado
     </p>
+
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
