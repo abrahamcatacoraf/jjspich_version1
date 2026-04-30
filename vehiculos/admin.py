@@ -3,6 +3,6 @@ from .models import Vehiculo
 
 @admin.register(Vehiculo)
 class VehiculoAdmin(admin.ModelAdmin):
-    list_display  = ['marca', 'modelo', 'placa', 'color', 'cliente']
+    list_display  = ['marca', 'modelo', 'placa', 'color', 'categoria', 'cliente']
     search_fields = ['marca', 'modelo', 'placa']
-    list_filter   = ['tipo', 'marca']
+    list_filter   = ['categoria']

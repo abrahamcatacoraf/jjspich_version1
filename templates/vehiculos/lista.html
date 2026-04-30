@@ -34,7 +34,9 @@
           <th>Vehículo</th>
           <th>Placa</th>
           <th>Color</th>
-          <th>Tipo</th>
+          <th>Categoría / Tipo</th>
+          <th>Km</th>
+          <th>Gasolina</th>
           <th>Cliente</th>
           <th class="text-center">Acciones</th>
         </tr>
@@ -48,7 +50,14 @@
           </td>
           <td><span class="badge bg-secondary">{{ v.placa }}</span></td>
           <td>{{ v.color }}</td>
-          <td>{{ v.get_tipo_display }}</td>
+          <td>
+            <span class="badge {% if v.categoria == 'motocicleta' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">
+              {{ v.get_categoria_display }}
+            </span><br>
+            <small class="text-muted">{{ v.get_tipo_display_completo }}</small>
+          </td>
+          <td>{{ v.kilometraje }} km</td>
+          <td>{{ v.gasolina }}%</td>
           <td>{{ v.cliente }}</td>
           <td class="text-center">
             <a href="{% url 'editar_vehiculo' v.pk %}" class="btn btn-sm btn-outline-warning me-1">

@@ -5,9 +5,9 @@
 
 {% block contenido %}
 <div class="row justify-content-center">
-  <div class="col-md-7">
-    <div class="card border-0 shadow-sm">
-      <div class="card-header bg-white border-0 pt-4 px-4">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
         <h5 class="mb-0"><i class="bi bi-car-front me-2"></i>{{ titulo }}</h5>
       </div>
       <div class="card-body p-4">
@@ -18,6 +18,24 @@
               <label class="form-label">Cliente *</label>
               {{ form.cliente }}
             </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Categoría *</label>
+              {{ form.categoria }}
+            </div>
+
+            <!-- Tipo vehículo -->
+            <div class="col-md-8" id="div_tipo_vehiculo">
+              <label class="form-label">Tipo de vehículo *</label>
+              {{ form.tipo_vehiculo }}
+            </div>
+
+            <!-- Tipo moto -->
+            <div class="col-md-8" id="div_tipo_moto" style="display:none;">
+              <label class="form-label">Tipo de motocicleta *</label>
+              {{ form.tipo_moto }}
+            </div>
+
             <div class="col-md-6">
               <label class="form-label">Marca *</label>
               {{ form.marca }}
@@ -33,14 +51,20 @@
             <div class="col-md-4">
               <label class="form-label">Placa *</label>
               {{ form.placa }}
+              <small class="text-muted">Se guardará en mayúsculas automáticamente</small>
             </div>
             <div class="col-md-4">
               <label class="form-label">Color *</label>
               {{ form.color }}
             </div>
-            <div class="col-12">
-              <label class="form-label">Tipo de vehículo</label>
-              {{ form.tipo }}
+            <div class="col-md-6">
+              <label class="form-label">Kilometraje (km)</label>
+              {{ form.kilometraje }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Gasolina en tanque (%)</label>
+              {{ form.gasolina }}
+              <small class="text-muted">Ingresa un valor entre 0 y 100</small>
             </div>
           </div>
           <div class="d-flex gap-2 mt-4">
@@ -56,4 +80,23 @@
     </div>
   </div>
 </div>
+
+<script>
+  const categoria = document.getElementById('id_categoria');
+  const divVehiculo = document.getElementById('div_tipo_vehiculo');
+  const divMoto = document.getElementById('div_tipo_moto');
+
+  function actualizarTipo() {
+    if (categoria.value === 'motocicleta') {
+      divVehiculo.style.display = 'none';
+      divMoto.style.display = 'block';
+    } else {
+      divVehiculo.style.display = 'block';
+      divMoto.style.display = 'none';
+    }
+  }
+
+  categoria.addEventListener('change', actualizarTipo);
+  actualizarTipo(); // ejecutar al cargar para edición
+</script>
 {% endblock %}
