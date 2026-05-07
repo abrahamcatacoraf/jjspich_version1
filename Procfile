@@ -1,1 +1,0 @@
-web: gunicorn taller_jjspich.wsgi --log-file -
