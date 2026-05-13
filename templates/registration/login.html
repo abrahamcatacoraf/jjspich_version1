@@ -20,10 +20,17 @@
     .login-card {
       background: #111111;
       border-radius: 20px;
-      padding: 2.5rem;
+      padding: 2rem;
       width: 100%;
       max-width: 420px;
       box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    }
+
+    @media (max-width: 576px) {
+      .login-card {
+        margin: 16px;
+        padding: 1.5rem;
+      }
     }
 
     .btn-primary {
@@ -97,7 +104,7 @@
     <div class="text-center mb-4">
       <img src="{% static 'img/logo_jjspich.png' %}"
            alt="JJ SPICH"
-           style="width:180px; display:block; margin:0 auto 12px;">
+           style="width:180px; max-width:100%; display:block; margin:0 auto 12px;">
       <p class="text-muted small mb-0">Sistema de Gestión Automotriz</p>
       <p class="text-muted small">La Paz, Bolivia</p>
     </div>

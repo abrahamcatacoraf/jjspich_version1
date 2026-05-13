@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from taller_jjspich.decoradores import solo_admin
 from .models import Orden, HistorialAdelanto
 from .forms import OrdenForm, AdelantoForm
 
@@ -81,6 +82,7 @@ def detalle_orden(request, pk):
     })
 
 @login_required
+@solo_admin
 def eliminar_orden(request, pk):
     orden = get_object_or_404(Orden, pk=pk)
     if request.method == 'POST':

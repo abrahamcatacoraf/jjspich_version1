@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from taller_jjspich.decoradores import solo_admin
 from .models import Vehiculo
 from .forms import VehiculoForm
 
@@ -54,6 +55,7 @@ def editar_vehiculo(request, pk):
     })
 
 @login_required
+@solo_admin
 def eliminar_vehiculo(request, pk):
     vehiculo = get_object_or_404(Vehiculo, pk=pk)
     if request.method == 'POST':

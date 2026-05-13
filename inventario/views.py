@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from taller_jjspich.decoradores import solo_admin
 from .models import Insumo
 from .forms import InsumoForm, AjusteStockForm
 
@@ -74,6 +75,7 @@ def ajustar_stock(request, pk):
     })
 
 @login_required
+@solo_admin
 def eliminar_insumo(request, pk):
     insumo = get_object_or_404(Insumo, pk=pk)
     if request.method == 'POST':

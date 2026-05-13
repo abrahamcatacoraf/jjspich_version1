@@ -103,42 +103,44 @@
         <a href="/ordenes/" class="btn btn-sm btn-primary">Ver todas</a>
       </div>
       <div class="card-body p-0">
-        <table class="table mb-0">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Cliente</th>
-              <th>Estado</th>
-              <th>Costo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for orden in ultimas_ordenes %}
-            <tr>
-              <td><strong>#{{ orden.pk }}</strong></td>
-              <td>{{ orden.cliente }}</td>
-              <td>
-                {% if orden.estado == 'recibido' %}
-                  <span class="badge bg-info text-dark">Recibido</span>
-                {% elif orden.estado == 'en_proceso' %}
-                  <span class="badge bg-warning text-dark">En proceso</span>
-                {% elif orden.estado == 'terminado' %}
-                  <span class="badge bg-success">Terminado</span>
-                {% else %}
-                  <span class="badge bg-secondary">Entregado</span>
-                {% endif %}
-              </td>
-              <td>Bs. {{ orden.costo_estimado }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="4" class="text-center text-muted py-3">
-                No hay órdenes aún
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Estado</th>
+                <th>Costo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for orden in ultimas_ordenes %}
+              <tr>
+                <td><strong>#{{ orden.pk }}</strong></td>
+                <td>{{ orden.cliente }}</td>
+                <td>
+                  {% if orden.estado == 'recibido' %}
+                    <span class="badge bg-info text-dark">Recibido</span>
+                  {% elif orden.estado == 'en_proceso' %}
+                    <span class="badge bg-warning text-dark">En proceso</span>
+                  {% elif orden.estado == 'terminado' %}
+                    <span class="badge bg-success">Terminado</span>
+                  {% else %}
+                    <span class="badge bg-secondary">Entregado</span>
+                  {% endif %}
+                </td>
+                <td>Bs. {{ orden.costo_estimado }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center text-muted py-3">
+                  No hay órdenes aún
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -150,34 +152,36 @@
         <a href="/inventario/" class="btn btn-sm btn-primary">Ver inventario</a>
       </div>
       <div class="card-body p-0">
-        <table class="table mb-0">
-          <thead>
-            <tr>
-              <th>Insumo</th>
-              <th>Stock</th>
-              <th>Mínimo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for insumo in insumos_criticos %}
-            <tr>
-              <td>{{ insumo.nombre }}</td>
-              <td>
-                <span class="badge bg-danger">
-                  {{ insumo.cantidad }} {{ insumo.unidad }}
-                </span>
-              </td>
-              <td class="text-muted">{{ insumo.stock_minimo }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="3" class="text-center text-muted py-3">
-                Todo el stock está bien
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>Insumo</th>
+                <th>Stock</th>
+                <th>Mínimo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for insumo in insumos_criticos %}
+              <tr>
+                <td>{{ insumo.nombre }}</td>
+                <td>
+                  <span class="badge bg-danger">
+                    {{ insumo.cantidad }} {{ insumo.unidad }}
+                  </span>
+                </td>
+                <td class="text-muted">{{ insumo.stock_minimo }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="3" class="text-center text-muted py-3">
+                  Todo el stock está bien
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

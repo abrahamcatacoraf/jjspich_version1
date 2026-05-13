@@ -24,54 +24,56 @@
 
 <div class="card border-0 shadow-sm">
   <div class="card-body p-0">
-    <table class="table table-hover mb-0">
-      <thead class="table-dark">
-        <tr>
-          <th>Orden</th>
-          <th>Cliente</th>
-          <th>Monto</th>
-          <th>Método</th>
-          <th>Tipo</th>
-          <th>Fecha</th>
-          <th class="text-center">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for pago in pagos %}
-        <tr>
-          <td>
-            <a href="{% url 'detalle_orden_pagos' pago.orden.pk %}" class="text-decoration-none">
-              <strong>#{{ pago.orden.pk }}</strong>
-            </a>
-          </td>
-          <td>{{ pago.orden.cliente }}</td>
-          <td><strong class="text-success">Bs. {{ pago.monto }}</strong></td>
-          <td>{{ pago.get_metodo_display }}</td>
-          <td>
-            {% if pago.es_adelanto %}
-              <span class="badge bg-warning text-dark">Adelanto</span>
-            {% else %}
-              <span class="badge bg-success">Pago final</span>
-            {% endif %}
-          </td>
-          <td>{{ pago.fecha|date:"d/m/Y H:i" }}</td>
-          <td class="text-center">
-            <a href="{% url 'eliminar_pago' pago.pk %}"
-               class="btn btn-sm btn-outline-danger">
-              <i class="bi bi-trash"></i>
-            </a>
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="7" class="text-center text-muted py-4">
-            No hay pagos registrados.
-            <a href="{% url 'nuevo_pago' %}">Registra el primero</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Orden</th>
+            <th>Cliente</th>
+            <th>Monto</th>
+            <th class="d-none d-md-table-cell">Método</th>
+            <th>Tipo</th>
+            <th class="d-none d-md-table-cell">Fecha</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pago in pagos %}
+          <tr>
+            <td>
+              <a href="{% url 'detalle_orden_pagos' pago.orden.pk %}" class="text-decoration-none">
+                <strong>#{{ pago.orden.pk }}</strong>
+              </a>
+            </td>
+            <td>{{ pago.orden.cliente }}</td>
+            <td><strong class="text-success">Bs. {{ pago.monto }}</strong></td>
+            <td class="d-none d-md-table-cell">{{ pago.get_metodo_display }}</td>
+            <td>
+              {% if pago.es_adelanto %}
+                <span class="badge bg-warning text-dark">Adelanto</span>
+              {% else %}
+                <span class="badge bg-success">Pago final</span>
+              {% endif %}
+            </td>
+            <td class="d-none d-md-table-cell">{{ pago.fecha|date:"d/m/Y H:i" }}</td>
+            <td class="text-center text-nowrap">
+              <a href="{% url 'eliminar_pago' pago.pk %}"
+                 class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-muted py-4">
+              No hay pagos registrados.
+              <a href="{% url 'nuevo_pago' %}">Registra el primero</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 {% endblock %}

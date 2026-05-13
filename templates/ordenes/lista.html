@@ -41,79 +41,85 @@
 
 <div class="card">
   <div class="card-body p-0">
-    <table class="table table-hover mb-0">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Cliente</th>
-          <th>Vehículo</th>
-          <th>Técnico</th>
-          <th>Estado</th>
-          {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
-          <th>Costo</th>
-          <th>Adelanto</th>
-          {% endif %}
-          <th>Recepción</th>
-          <th class="text-center">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for orden in ordenes %}
-        <tr>
-          <td><strong>#{{ orden.pk }}</strong></td>
-          <td>{{ orden.cliente }}</td>
-          <td>
-            <span class="badge bg-secondary">{{ orden.vehiculo.placa }}</span>
-            {{ orden.vehiculo.marca }} {{ orden.vehiculo.modelo }}
-          </td>
-          <td>{{ orden.tecnico.username|default:"—" }}</td>
-          <td>
-            {% if orden.estado == 'recibido' %}
-              <span class="badge bg-info text-dark">Recibido</span>
-            {% elif orden.estado == 'en_proceso' %}
-              <span class="badge bg-warning text-dark">En proceso</span>
-            {% elif orden.estado == 'terminado' %}
-              <span class="badge bg-success">Terminado</span>
-            {% else %}
-              <span class="badge bg-secondary">Entregado</span>
-            {% endif %}
-          </td>
-          {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
-          <td>Bs. {{ orden.costo_estimado }}</td>
-          <td>Bs. {{ orden.primer_adelanto }}</td>
-          {% endif %}
-          <td>{{ orden.fecha_recepcion|date:"d/m/Y"|default:"—" }}</td>
-          <td class="text-center">
-            <a href="{% url 'detalle_orden' orden.pk %}"
-               class="btn btn-sm btn-outline-info me-1" title="Ver detalle">
-              <i class="bi bi-eye"></i>
-            </a>
-            <a href="{% url 'editar_orden' orden.pk %}"
-               class="btn btn-sm btn-outline-warning me-1" title="Editar">
-              <i class="bi bi-pencil"></i>
-            </a>
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Vehículo</th>
+            <th class="d-none d-md-table-cell">Técnico</th>
+            <th>Estado</th>
             {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
-            <a href="{% url 'detalle_orden_pagos' orden.pk %}"
-               class="btn btn-sm btn-outline-success me-1" title="Ver pagos">
-              <i class="bi bi-cash-coin"></i>
-            </a>
-            <a href="{% url 'eliminar_orden' orden.pk %}"
-               class="btn btn-sm btn-outline-danger" title="Eliminar">
-              <i class="bi bi-trash"></i>
-            </a>
+            <th class="d-none d-md-table-cell">Costo</th>
+            <th class="d-none d-md-table-cell">Adelanto</th>
             {% endif %}
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="9" class="text-center text-muted py-4">
-            No hay órdenes registradas.
-            <a href="{% url 'nueva_orden' %}">Crea la primera</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+            <th class="d-none d-md-table-cell">Recepción</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for orden in ordenes %}
+          <tr>
+            <td><strong>#{{ orden.pk }}</strong></td>
+            <td>{{ orden.cliente }}</td>
+            <td>
+              <span class="badge bg-secondary">{{ orden.vehiculo.placa }}</span>
+              {{ orden.vehiculo.marca }} {{ orden.vehiculo.modelo }}
+            </td>
+            <td class="d-none d-md-table-cell">{{ orden.tecnico.username|default:"—" }}</td>
+            <td>
+              {% if orden.estado == 'recibido' %}
+                <span class="badge bg-info text-dark">Recibido</span>
+              {% elif orden.estado == 'en_proceso' %}
+                <span class="badge bg-warning text-dark">En proceso</span>
+              {% elif orden.estado == 'terminado' %}
+                <span class="badge bg-success">Terminado</span>
+              {% else %}
+                <span class="badge bg-secondary">Entregado</span>
+              {% endif %}
+            </td>
+            {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
+            <td class="d-none d-md-table-cell">Bs. {{ orden.costo_estimado }}</td>
+            <td class="d-none d-md-table-cell">Bs. {{ orden.primer_adelanto }}</td>
+            {% endif %}
+            <td class="d-none d-md-table-cell">{{ orden.fecha_recepcion|date:"d/m/Y"|default:"—" }}</td>
+            <td class="text-center text-nowrap">
+              <a href="{% url 'detalle_orden' orden.pk %}"
+                 class="btn btn-sm btn-outline-info me-1" title="Ver detalle">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="{% url 'editar_orden' orden.pk %}"
+                 class="btn btn-sm btn-outline-warning me-1" title="Editar">
+                <i class="bi bi-pencil"></i>
+              </a>
+              {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
+              <a href="{% url 'detalle_orden_pagos' orden.pk %}"
+                 class="btn btn-sm btn-outline-success me-1" title="Ver pagos">
+                <i class="bi bi-cash-coin"></i>
+              </a>
+              <a href="{% url 'eliminar_orden' orden.pk %}"
+                 class="btn btn-sm btn-outline-danger" title="Eliminar">
+                <i class="bi bi-trash"></i>
+              </a>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
+            <td colspan="9" class="text-center text-muted py-4">
+            {% else %}
+            <td colspan="6" class="text-center text-muted py-4">
+            {% endif %}
+              No hay órdenes registradas.
+              <a href="{% url 'nueva_orden' %}">Crea la primera</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 {% endblock %}
