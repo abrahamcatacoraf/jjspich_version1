@@ -72,6 +72,12 @@
             <td class="d-none d-md-table-cell">Bs. {{ insumo.precio_unitario }}</td>
             <td class="d-none d-md-table-cell">Bs. {{ insumo.valor_total }}</td>
             <td class="text-center text-nowrap">
+              {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
+              <a href="{% url 'movimientos_insumo' insumo.pk %}"
+                 class="btn btn-sm btn-outline-info me-1" title="Ver movimientos">
+                <i class="bi bi-clock-history"></i>
+              </a>
+              {% endif %}
               <a href="{% url 'ajustar_stock' insumo.pk %}"
                  class="btn btn-sm btn-outline-success me-1" title="Ajustar stock">
                 <i class="bi bi-arrow-left-right"></i>

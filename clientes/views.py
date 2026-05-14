@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from taller_jjspich.decoradores import solo_admin
-from auditoria.utils import registrar
+from auditoria.utils import registrar, generar_detalle_edicion
 from .models import Cliente
 from .forms import ClienteForm
 
@@ -46,8 +46,10 @@ def editar_cliente(request, pk):
     if request.method == 'POST':
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
+            etiquetas = {'nombre': 'Nombre', 'apellido': 'Apellido', 'ci': 'CI', 'telefono': 'Teléfono', 'correo': 'Correo', 'direccion': 'Dirección'}
             form.save()
-            registrar(request.user, 'edicion', 'Cliente', cliente.pk, f"Se editó Cliente: {cliente}")
+            detalle = generar_detalle_edicion(form, etiquetas)
+            registrar(request.user, 'edicion', 'Cliente', cliente.pk, f"Se editó Cliente: {cliente} — {detalle}")
             messages.success(request, 'Cliente actualizado correctamente.')
             return redirect('lista_clientes')
     else:

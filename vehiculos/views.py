@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from taller_jjspich.decoradores import solo_admin
-from auditoria.utils import registrar
+from auditoria.utils import registrar, generar_detalle_edicion
 from .models import Vehiculo
 from .forms import VehiculoForm
 
@@ -47,8 +47,10 @@ def editar_vehiculo(request, pk):
     if request.method == 'POST':
         form = VehiculoForm(request.POST, instance=vehiculo)
         if form.is_valid():
+            etiquetas = {'marca': 'Marca', 'modelo': 'Modelo', 'anio': 'Año', 'placa': 'Placa', 'color': 'Color', 'kilometraje': 'Kilometraje', 'gasolina': 'Gasolina'}
             form.save()
-            registrar(request.user, 'edicion', 'Vehiculo', vehiculo.pk, f"Se editó Vehículo: {vehiculo}")
+            detalle = generar_detalle_edicion(form, etiquetas)
+            registrar(request.user, 'edicion', 'Vehiculo', vehiculo.pk, f"Se editó Vehículo: {vehiculo} — {detalle}")
             messages.success(request, 'Vehículo actualizado correctamente.')
             return redirect('lista_vehiculos')
     else:

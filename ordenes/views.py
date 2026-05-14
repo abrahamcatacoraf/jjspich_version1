@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from taller_jjspich.decoradores import solo_admin
-from auditoria.utils import registrar
+from auditoria.utils import registrar, generar_detalle_edicion
 from .models import Orden, HistorialAdelanto
 from .forms import OrdenForm, AdelantoForm
 
@@ -56,8 +56,10 @@ def editar_orden(request, pk):
     if request.method == 'POST':
         form = OrdenForm(request.POST, instance=orden)
         if form.is_valid():
+            etiquetas = {'descripcion': 'Descripción', 'diagnostico': 'Diagnóstico', 'estado': 'Estado', 'fecha_recepcion': 'Fecha recepción', 'fecha_entrega': 'Fecha entrega', 'costo_estimado': 'Costo estimado', 'primer_adelanto': 'Adelanto', 'observaciones': 'Observaciones'}
             orden = form.save()
-            registrar(request.user, 'edicion', 'Orden', orden.pk, f"Se editó Orden #{orden.pk} — {orden.cliente}")
+            detalle = generar_detalle_edicion(form, etiquetas)
+            registrar(request.user, 'edicion', 'Orden', orden.pk, f"Se editó Orden #{orden.pk} — {orden.cliente} — {detalle}")
             # Registrar historial si cambió el adelanto
             if orden.primer_adelanto != adelanto_anterior:
                 HistorialAdelanto.objects.create(

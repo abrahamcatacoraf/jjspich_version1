@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+import datetime
+from django.db.models import Sum
 from taller_jjspich.decoradores import solo_admin
-from auditoria.utils import registrar
-from .models import Insumo
+from auditoria.utils import registrar, generar_detalle_edicion
+from .models import Insumo, MovimientoInsumo
 from .forms import InsumoForm, AjusteStockForm
 
 @login_required
@@ -42,8 +44,10 @@ def editar_insumo(request, pk):
     if request.method == 'POST':
         form = InsumoForm(request.POST, instance=insumo)
         if form.is_valid():
+            etiquetas = {'nombre': 'Nombre', 'categoria': 'Categoría', 'cantidad': 'Cantidad', 'unidad': 'Unidad', 'precio_unitario': 'Precio unitario', 'stock_minimo': 'Stock mínimo'}
             form.save()
-            registrar(request.user, 'edicion', 'Insumo', insumo.pk, f"Se editó Insumo: {insumo.nombre}")
+            detalle = generar_detalle_edicion(form, etiquetas)
+            registrar(request.user, 'edicion', 'Insumo', insumo.pk, f"Se editó Insumo: {insumo.nombre} — {detalle}")
             messages.success(request, 'Insumo actualizado correctamente.')
             return redirect('lista_inventario')
     else:
@@ -60,6 +64,7 @@ def ajustar_stock(request, pk):
         if form.is_valid():
             tipo     = form.cleaned_data['tipo']
             cantidad = form.cleaned_data['cantidad']
+            cantidad_inicial = insumo.cantidad
             if tipo == 'entrada':
                 insumo.cantidad += cantidad
                 messages.success(request, f'Se agregaron {cantidad} {insumo.unidad} de {insumo.nombre}.')
@@ -70,11 +75,42 @@ def ajustar_stock(request, pk):
                 insumo.cantidad -= cantidad
                 messages.warning(request, f'Se retiraron {cantidad} {insumo.unidad} de {insumo.nombre}.')
             insumo.save()
+            MovimientoInsumo.objects.create(
+                insumo=insumo,
+                tipo=tipo,
+                precio_unitario=insumo.precio_unitario,
+                cantidad_inicial=cantidad_inicial,
+                cantidad_movimiento=cantidad,
+                cantidad_actual=insumo.cantidad,
+            )
             return redirect('lista_inventario')
     else:
         form = AjusteStockForm()
     return render(request, 'inventario/ajustar_stock.html', {
         'form': form, 'insumo': insumo
+    })
+
+@login_required
+@solo_admin
+def movimientos_insumo(request, pk):
+    insumo = get_object_or_404(Insumo, pk=pk)
+    hoy = datetime.date.today()
+    mes = request.GET.get('mes', str(hoy.month))
+    anio = request.GET.get('anio', str(hoy.year))
+    movs = MovimientoInsumo.objects.filter(
+        insumo=insumo,
+        fecha__month=int(mes),
+        fecha__year=int(anio),
+    )
+    total_ingresos = movs.filter(tipo='entrada').aggregate(t=Sum('cantidad_movimiento'))['t'] or 0
+    total_salidas = movs.filter(tipo='salida').aggregate(t=Sum('cantidad_movimiento'))['t'] or 0
+    return render(request, 'inventario/movimientos.html', {
+        'insumo': insumo,
+        'movimientos': movs,
+        'mes': mes,
+        'anio': anio,
+        'total_ingresos': total_ingresos,
+        'total_salidas': total_salidas,
     })
 
 @login_required
