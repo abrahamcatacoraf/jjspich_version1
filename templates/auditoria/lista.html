@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %}
+{% block titulo %}Auditoría — JJ SPICH{% endblock %}
+{% block subtitulo %}Registro de actividades{% endblock %}
+{% block nav_auditoria %}active{% endblock %}
+
+{% block contenido %}
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Acción</th>
+            <th>Modelo</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in registros %}
+          <tr>
+            <td class="text-nowrap">{{ r.fecha|date:"d/m/Y H:i" }}</td>
+            <td>{{ r.usuario|default:"—" }}</td>
+            <td>
+              {% if r.accion == 'creacion' %}
+                <span class="badge bg-success">Creación</span>
+              {% elif r.accion == 'edicion' %}
+                <span class="badge bg-info text-dark">Edición</span>
+              {% else %}
+                <span class="badge bg-danger">Eliminación</span>
+              {% endif %}
+            </td>
+            <td>{{ r.modelo }}</td>
+            <td>{{ r.detalle }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="text-center text-muted py-4">
+              No hay registros de auditoría.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

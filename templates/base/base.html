@@ -352,6 +352,9 @@
     {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
     <div class="sidebar-section">Sistema</div>
     <nav class="nav flex-column">
+      <a href="/auditoria/" class="nav-link {% block nav_auditoria %}{% endblock %}">
+        <i class="bi bi-journal-text"></i> Auditoría
+      </a>
       <a href="/admin/" class="nav-link">
         <i class="bi bi-gear"></i> Administración
       </a>

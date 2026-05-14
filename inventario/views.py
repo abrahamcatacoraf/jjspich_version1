@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from taller_jjspich.decoradores import solo_admin
+from auditoria.utils import registrar
 from .models import Insumo
 from .forms import InsumoForm, AjusteStockForm
 
@@ -25,7 +26,8 @@ def nuevo_insumo(request):
     if request.method == 'POST':
         form = InsumoForm(request.POST)
         if form.is_valid():
-            form.save()
+            insumo = form.save()
+            registrar(request.user, 'creacion', 'Insumo', insumo.pk, f"Se creó Insumo: {insumo.nombre}")
             messages.success(request, 'Insumo registrado correctamente.')
             return redirect('lista_inventario')
     else:
@@ -41,6 +43,7 @@ def editar_insumo(request, pk):
         form = InsumoForm(request.POST, instance=insumo)
         if form.is_valid():
             form.save()
+            registrar(request.user, 'edicion', 'Insumo', insumo.pk, f"Se editó Insumo: {insumo.nombre}")
             messages.success(request, 'Insumo actualizado correctamente.')
             return redirect('lista_inventario')
     else:
@@ -79,6 +82,7 @@ def ajustar_stock(request, pk):
 def eliminar_insumo(request, pk):
     insumo = get_object_or_404(Insumo, pk=pk)
     if request.method == 'POST':
+        registrar(request.user, 'eliminacion', 'Insumo', insumo.pk, f"Se eliminó Insumo: {insumo.nombre}")
         insumo.delete()
         messages.success(request, 'Insumo eliminado correctamente.')
         return redirect('lista_inventario')

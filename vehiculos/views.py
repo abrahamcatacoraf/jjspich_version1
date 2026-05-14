@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from taller_jjspich.decoradores import solo_admin
+from auditoria.utils import registrar
 from .models import Vehiculo
 from .forms import VehiculoForm
 
@@ -29,7 +30,8 @@ def nuevo_vehiculo(request):
     if request.method == 'POST':
         form = VehiculoForm(request.POST)
         if form.is_valid():
-            form.save()
+            vehiculo = form.save()
+            registrar(request.user, 'creacion', 'Vehiculo', vehiculo.pk, f"Se creó Vehículo: {vehiculo}")
             messages.success(request, 'Vehículo registrado correctamente.')
             return redirect('lista_vehiculos')
     else:
@@ -46,6 +48,7 @@ def editar_vehiculo(request, pk):
         form = VehiculoForm(request.POST, instance=vehiculo)
         if form.is_valid():
             form.save()
+            registrar(request.user, 'edicion', 'Vehiculo', vehiculo.pk, f"Se editó Vehículo: {vehiculo}")
             messages.success(request, 'Vehículo actualizado correctamente.')
             return redirect('lista_vehiculos')
     else:
@@ -66,6 +69,7 @@ def vehiculos_por_cliente(request):
 def eliminar_vehiculo(request, pk):
     vehiculo = get_object_or_404(Vehiculo, pk=pk)
     if request.method == 'POST':
+        registrar(request.user, 'eliminacion', 'Vehiculo', vehiculo.pk, f"Se eliminó Vehículo: {vehiculo}")
         vehiculo.delete()
         messages.success(request, 'Vehículo eliminado correctamente.')
         return redirect('lista_vehiculos')

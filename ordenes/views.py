@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from taller_jjspich.decoradores import solo_admin
+from auditoria.utils import registrar
 from .models import Orden, HistorialAdelanto
 from .forms import OrdenForm, AdelantoForm
 
@@ -30,6 +31,7 @@ def nueva_orden(request):
         form = OrdenForm(request.POST)
         if form.is_valid():
             orden = form.save()
+            registrar(request.user, 'creacion', 'Orden', orden.pk, f"Se creó Orden #{orden.pk} — {orden.cliente}")
             # Registrar historial si hay adelanto
             if orden.primer_adelanto > 0:
                 HistorialAdelanto.objects.create(
@@ -55,6 +57,7 @@ def editar_orden(request, pk):
         form = OrdenForm(request.POST, instance=orden)
         if form.is_valid():
             orden = form.save()
+            registrar(request.user, 'edicion', 'Orden', orden.pk, f"Se editó Orden #{orden.pk} — {orden.cliente}")
             # Registrar historial si cambió el adelanto
             if orden.primer_adelanto != adelanto_anterior:
                 HistorialAdelanto.objects.create(
@@ -86,6 +89,7 @@ def detalle_orden(request, pk):
 def eliminar_orden(request, pk):
     orden = get_object_or_404(Orden, pk=pk)
     if request.method == 'POST':
+        registrar(request.user, 'eliminacion', 'Orden', orden.pk, f"Se eliminó Orden #{orden.pk} — {orden.cliente}")
         orden.delete()
         messages.success(request, 'Orden eliminada correctamente.')
         return redirect('lista_ordenes')

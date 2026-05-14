@@ -23,6 +23,8 @@ urlpatterns = [
     path('pagos/', include('pagos.urls')),
 
     # Reportes
+    path('auditoria/', include('auditoria.urls')),
+
     path('reportes/', views.vista_reportes, name='reportes'),
     path('reportes/pdf/ordenes/', views.pdf_ordenes, name='pdf_ordenes'),
     path('reportes/pdf/pagos/', views.pdf_pagos, name='pdf_pagos'),

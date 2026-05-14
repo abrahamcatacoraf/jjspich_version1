@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'ordenes',
     'inventario',
     'pagos',
+    'auditoria',
     'taller_jjspich',
 ]
 

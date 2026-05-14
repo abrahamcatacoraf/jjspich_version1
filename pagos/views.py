@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from taller_jjspich.decoradores import solo_admin
+from auditoria.utils import registrar
 from .models import Pago
 from .forms import PagoForm
 from ordenes.models import Orden
@@ -23,7 +24,8 @@ def nuevo_pago(request):
     if request.method == 'POST':
         form = PagoForm(request.POST)
         if form.is_valid():
-            form.save()
+            pago = form.save()
+            registrar(request.user, 'creacion', 'Pago', pago.pk, f"Se registró Pago de Bs.{pago.monto} — Orden #{pago.orden.pk}")
             messages.success(request, 'Pago registrado correctamente.')
             return redirect('lista_pagos')
     else:
@@ -50,6 +52,7 @@ def detalle_orden_pagos(request, orden_pk):
 def eliminar_pago(request, pk):
     pago = get_object_or_404(Pago, pk=pk)
     if request.method == 'POST':
+        registrar(request.user, 'eliminacion', 'Pago', pago.pk, f"Se eliminó Pago de Bs.{pago.monto} — Orden #{pago.orden.pk}")
         pago.delete()
         messages.success(request, 'Pago eliminado correctamente.')
         return redirect('lista_pagos')
