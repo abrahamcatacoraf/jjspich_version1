@@ -11,6 +11,7 @@
   </a>
 </div>
 
+{% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
 <div class="row g-3 mb-4">
   <div class="col-md-4">
     <div class="card border-0 shadow-sm">
@@ -21,6 +22,7 @@
     </div>
   </div>
 </div>
+{% endif %}
 
 <div class="card border-0 shadow-sm">
   <div class="card-body p-0">
@@ -52,15 +54,17 @@
               {% if pago.es_adelanto %}
                 <span class="badge bg-warning text-dark">Adelanto</span>
               {% else %}
-                <span class="badge bg-success">Pago final</span>
+                <span class="badge bg-danger">Pago final</span>
               {% endif %}
             </td>
             <td class="d-none d-md-table-cell">{{ pago.fecha|date:"d/m/Y H:i" }}</td>
             <td class="text-center text-nowrap">
+              {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
               <a href="{% url 'eliminar_pago' pago.pk %}"
                  class="btn btn-sm btn-outline-danger">
                 <i class="bi bi-trash"></i>
               </a>
+              {% endif %}
             </td>
           </tr>
           {% empty %}

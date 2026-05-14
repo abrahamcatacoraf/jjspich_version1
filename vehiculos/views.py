@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from taller_jjspich.decoradores import solo_admin
 from .models import Vehiculo
 from .forms import VehiculoForm
@@ -53,6 +54,12 @@ def editar_vehiculo(request, pk):
         'form': form,
         'titulo': 'Editar Vehículo'
     })
+
+@login_required
+def vehiculos_por_cliente(request):
+    cliente_id = request.GET.get('cliente_id')
+    vehiculos = Vehiculo.objects.filter(cliente_id=cliente_id).values('id', 'marca', 'modelo', 'placa')
+    return JsonResponse(list(vehiculos), safe=False)
 
 @login_required
 @solo_admin

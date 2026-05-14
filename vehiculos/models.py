@@ -24,6 +24,19 @@ class Vehiculo(models.Model):
         ('vehiculo',    'Vehículo'),
         ('motocicleta', 'Motocicleta'),
     ]
+    MARCAS = [
+        ('toyota',     'Toyota'),
+        ('nissan',     'Nissan'),
+        ('mitsubishi', 'Mitsubishi'),
+        ('keyton',     'Keyton'),
+        ('kinglong',   'KingLong'),
+        ('honda',      'Honda'),
+        ('chevrolet',  'Chevrolet'),
+        ('jac',        'JAC'),
+        ('foton',      'Foton'),
+        ('volkswagen', 'Volkswagen'),
+        ('otro',       'Otro'),
+    ]
 
     cliente     = models.ForeignKey(Cliente, on_delete=models.CASCADE,
                     related_name='vehiculos')
@@ -33,7 +46,7 @@ class Vehiculo(models.Model):
                     blank=True, null=True, verbose_name='Tipo de vehículo')
     tipo_moto   = models.CharField(max_length=20, choices=TIPOS_MOTO,
                     blank=True, null=True, verbose_name='Tipo de motocicleta')
-    marca       = models.CharField(max_length=50)
+    marca       = models.CharField(max_length=50, choices=MARCAS, default='otro')
     modelo      = models.CharField(max_length=50)
     anio        = models.IntegerField(verbose_name='Año')
     placa       = models.CharField(max_length=20, unique=True)

@@ -46,7 +46,7 @@
           {% for v in vehiculos %}
           <tr>
             <td>
-              <i class="bi bi-car-front text-muted me-1"></i>
+              <i class="fa-solid {% if v.categoria == 'motocicleta' %}fa-motorcycle{% else %}fa-car{% endif %} text-muted me-1"></i>
               {{ v.marca }} {{ v.modelo }} ({{ v.anio }})
             </td>
             <td><span class="badge bg-secondary">{{ v.placa }}</span></td>
@@ -64,7 +64,7 @@
               <a href="{% url 'editar_vehiculo' v.pk %}" class="btn btn-sm btn-outline-warning me-1">
                 <i class="bi bi-pencil"></i>
               </a>
-              {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
+              {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
               <a href="{% url 'eliminar_vehiculo' v.pk %}" class="btn btn-sm btn-outline-danger">
                 <i class="bi bi-trash"></i>
               </a>

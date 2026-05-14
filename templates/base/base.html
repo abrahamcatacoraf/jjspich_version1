@@ -7,6 +7,7 @@
   <title>{% block titulo %}Taller JJ SPICH{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     :root {
       --color-negro:    #0d0d0d;
@@ -326,7 +327,7 @@
         <i class="bi bi-people"></i> Clientes
       </a>
       <a href="/vehiculos/" class="nav-link {% block nav_vehiculos %}{% endblock %}">
-        <i class="bi bi-car-front"></i> Vehículos
+        <i class="fa-solid fa-car"></i> Vehículos
       </a>
       <a href="/ordenes/" class="nav-link {% block nav_ordenes %}{% endblock %}">
         <i class="bi bi-clipboard-check"></i> Órdenes de trabajo
@@ -336,24 +337,26 @@
       </a>
     </nav>
 
-    {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
     <div class="sidebar-section">Finanzas</div>
     <nav class="nav flex-column">
       <a href="/pagos/" class="nav-link {% block nav_pagos %}{% endblock %}">
         <i class="bi bi-cash-coin"></i> Pagos
       </a>
+      {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
       <a href="/reportes/" class="nav-link {% block nav_reportes %}{% endblock %}">
         <i class="bi bi-file-earmark-pdf"></i> Reportes
       </a>
+      {% endif %}
     </nav>
-    {% endif %}
 
+    {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
     <div class="sidebar-section">Sistema</div>
     <nav class="nav flex-column">
       <a href="/admin/" class="nav-link">
         <i class="bi bi-gear"></i> Administración
       </a>
     </nav>
+    {% endif %}
 
     <div class="sidebar-footer">
       <div class="user-badge">

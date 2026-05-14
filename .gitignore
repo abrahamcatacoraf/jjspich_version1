@@ -16,3 +16,5 @@ staticfiles/
 # Windows
 Thumbs.db
 Desktop.ini
+# Agente local
+AGENTS.md

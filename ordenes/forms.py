@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from vehiculos.models import Vehiculo
 from .models import Orden, HistorialAdelanto
 
 class OrdenForm(forms.ModelForm):
@@ -26,11 +27,20 @@ class OrdenForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Solo mostrar usuarios del grupo Técnico
-        self.fields['tecnico'].queryset = User.objects.filter(
-            groups__name='Tecnico'
-        )
+
+        self.fields['tecnico'].queryset = User.objects.filter(groups__name='Tecnico')
         self.fields['tecnico'].empty_label = '— Sin asignar —'
+
+        self.fields['vehiculo'].queryset = Vehiculo.objects.none()
+
+        if 'cliente' in self.data:
+            try:
+                cliente_id = int(self.data.get('cliente'))
+                self.fields['vehiculo'].queryset = Vehiculo.objects.filter(cliente_id=cliente_id)
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk:
+            self.fields['vehiculo'].queryset = Vehiculo.objects.filter(cliente=self.instance.cliente)
 
 
 class AdelantoForm(forms.ModelForm):

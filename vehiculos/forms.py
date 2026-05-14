@@ -14,7 +14,7 @@ class VehiculoForm(forms.ModelForm):
             'categoria':     forms.Select(attrs={'class': 'form-select', 'id': 'id_categoria'}),
             'tipo_vehiculo': forms.Select(attrs={'class': 'form-select', 'id': 'id_tipo_vehiculo'}),
             'tipo_moto':     forms.Select(attrs={'class': 'form-select', 'id': 'id_tipo_moto'}),
-            'marca':         forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Toyota'}),
+            'marca':         forms.Select(attrs={'class': 'form-select'}),
             'modelo':        forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Corolla'}),
             'anio':          forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 2020'}),
             'placa':         forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 1234ABC', 'style': 'text-transform:uppercase'}),

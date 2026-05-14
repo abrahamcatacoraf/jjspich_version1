@@ -63,6 +63,7 @@
     </div>
   </div>
 
+  {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
   <div class="col-md-3 col-6">
     <div class="card">
       <div class="card-body p-4">
@@ -81,6 +82,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
 </div>
 
 {% if stock_bajo > 0 %}
@@ -110,7 +112,9 @@
                 <th>#</th>
                 <th>Cliente</th>
                 <th>Estado</th>
+                {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
                 <th>Costo</th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -129,11 +133,17 @@
                     <span class="badge bg-secondary">Entregado</span>
                   {% endif %}
                 </td>
+                {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
                 <td>Bs. {{ orden.costo_estimado }}</td>
+                {% endif %}
               </tr>
               {% empty %}
               <tr>
+                {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
                 <td colspan="4" class="text-center text-muted py-3">
+                {% else %}
+                <td colspan="3" class="text-center text-muted py-3">
+                {% endif %}
                   No hay órdenes aún
                 </td>
               </tr>

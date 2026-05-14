@@ -21,7 +21,17 @@
             </div>
             <div class="col-md-6">
               <label class="form-label">Vehículo *</label>
-              {{ form.vehiculo }}
+              <select name="{{ form.vehiculo.html_name }}" class="form-select" id="{{ form.vehiculo.id_for_label }}">
+                <option value="">— Seleccione un cliente primero —</option>
+                {% for v in form.vehiculo.field.queryset %}
+                  <option value="{{ v.pk }}" {% if form.vehiculo.value|stringformat:"s" == v.pk|stringformat:"s" %}selected{% endif %}>{{ v.marca }} {{ v.modelo }} — {{ v.placa }}</option>
+                {% endfor %}
+              </select>
+              <div id="sinVehiculos" class="alert alert-warning py-2 mt-1" style="display:none;">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                El cliente no tiene vehículos registrados.
+                <a href="{% url 'nuevo_vehiculo' %}" class="alert-link">Registrar vehículo</a>
+              </div>
             </div>
             <div class="col-md-6">
               <label class="form-label">Fecha de recepción del vehículo</label>
@@ -48,12 +58,10 @@
               {{ form.fecha_entrega }}
             </div>
 
-            {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
             <div class="col-md-4">
               <label class="form-label">Costo estimado (Bs.)</label>
               {{ form.costo_estimado }}
             </div>
-            {% endif %}
 
             <div class="col-md-6">
               <label class="form-label">Primer adelanto (Bs.)</label>
@@ -78,4 +86,30 @@
     </div>
   </div>
 </div>
+<script>
+  document.getElementById('id_cliente').addEventListener('change', function() {
+    var vehiculoSelect = document.getElementById('id_vehiculo');
+    var sinVehiculos = document.getElementById('sinVehiculos');
+    var btnGuardar = document.querySelector('button[type="submit"]');
+    vehiculoSelect.innerHTML = '<option value="">Cargando...</option>';
+    sinVehiculos.style.display = 'none';
+    btnGuardar.disabled = false;
+    fetch('/vehiculos/api/por-cliente/?cliente_id=' + this.value)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        vehiculoSelect.innerHTML = '<option value="">— Seleccione un vehículo —</option>';
+        if (data.length === 0) {
+          sinVehiculos.style.display = 'block';
+          btnGuardar.disabled = true;
+        } else {
+          data.forEach(function(v) {
+            var opt = document.createElement('option');
+            opt.value = v.id;
+            opt.textContent = v.marca + ' ' + v.modelo + ' — ' + v.placa;
+            vehiculoSelect.appendChild(opt);
+          });
+        }
+      });
+  });
+</script>
 {% endblock %}

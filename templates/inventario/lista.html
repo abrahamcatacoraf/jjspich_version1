@@ -80,7 +80,7 @@
                  class="btn btn-sm btn-outline-warning me-1" title="Editar">
                 <i class="bi bi-pencil"></i>
               </a>
-              {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
+              {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
               <a href="{% url 'eliminar_insumo' insumo.pk %}"
                  class="btn btn-sm btn-outline-danger" title="Eliminar">
                 <i class="bi bi-trash"></i>

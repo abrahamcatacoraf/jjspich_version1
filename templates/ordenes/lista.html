@@ -50,7 +50,7 @@
             <th>Vehículo</th>
             <th class="d-none d-md-table-cell">Técnico</th>
             <th>Estado</th>
-            {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
+            {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
             <th class="d-none d-md-table-cell">Costo</th>
             <th class="d-none d-md-table-cell">Adelanto</th>
             {% endif %}
@@ -79,7 +79,7 @@
                 <span class="badge bg-secondary">Entregado</span>
               {% endif %}
             </td>
-            {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
+            {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
             <td class="d-none d-md-table-cell">Bs. {{ orden.costo_estimado }}</td>
             <td class="d-none d-md-table-cell">Bs. {{ orden.primer_adelanto }}</td>
             {% endif %}
@@ -93,7 +93,7 @@
                  class="btn btn-sm btn-outline-warning me-1" title="Editar">
                 <i class="bi bi-pencil"></i>
               </a>
-              {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
+              {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
               <a href="{% url 'detalle_orden_pagos' orden.pk %}"
                  class="btn btn-sm btn-outline-success me-1" title="Ver pagos">
                 <i class="bi bi-cash-coin"></i>
@@ -107,7 +107,7 @@
           </tr>
           {% empty %}
           <tr>
-            {% if request.user.is_superuser or request.user.groups.all.0.name == 'Administrador' %}
+            {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
             <td colspan="9" class="text-center text-muted py-4">
             {% else %}
             <td colspan="6" class="text-center text-muted py-4">

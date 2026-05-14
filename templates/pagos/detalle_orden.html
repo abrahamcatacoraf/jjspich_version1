@@ -63,7 +63,7 @@
               {% if pago.es_adelanto %}
                 <span class="badge bg-warning text-dark">Adelanto</span>
               {% else %}
-                <span class="badge bg-success">Pago final</span>
+                <span class="badge bg-danger">Pago final</span>
               {% endif %}
             </td>
             <td class="d-none d-md-table-cell">{{ pago.fecha|date:"d/m/Y H:i" }}</td>
