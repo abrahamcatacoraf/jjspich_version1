@@ -29,6 +29,9 @@ urlpatterns = [
     path('reportes/pdf/ordenes/', views.pdf_ordenes, name='pdf_ordenes'),
     path('reportes/pdf/pagos/', views.pdf_pagos, name='pdf_pagos'),
     path('reportes/pdf/inventario/', views.pdf_inventario, name='pdf_inventario'),
+    path('reportes/pdf/inventario/movimientos/', views.pdf_movimientos_inventario, name='pdf_movimientos_inventario'),
+
+    path('reportes/pdf/pagos/orden/', views.pdf_pagos_orden, name='pdf_pagos_orden'),
 
     path('sin-permiso/', sin_permiso, name='sin_permiso'),
 ]

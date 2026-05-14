@@ -12,12 +12,14 @@
 
 <div class="row g-4">
 
-  <div class="col-md-4">
+  <!-- ─── ORDENES ─── -->
+  <div class="col-12">
     <div class="card border-0 shadow-sm h-100">
-      <div class="card-body text-center py-4">
-        <i class="bi bi-clipboard-check fs-1 text-warning"></i>
-        <h5 class="mt-3">Órdenes de trabajo</h5>
-        <p class="text-muted small">Lista completa de todas las órdenes registradas en el sistema.</p>
+      <div class="card-header bg-white border-0 pt-4 px-4">
+        <h5 class="mb-0"><i class="bi bi-clipboard-check text-warning me-2"></i>Órdenes</h5>
+      </div>
+      <div class="card-body px-4">
+        <p class="text-muted small mb-0">Lista completa de todas las órdenes registradas en el sistema.</p>
       </div>
       <div class="card-footer bg-white border-0 text-center pb-4">
         <a href="{% url 'pdf_ordenes' %}" class="btn btn-warning" target="_blank">
@@ -27,32 +29,101 @@
     </div>
   </div>
 
-  <div class="col-md-4">
+  <!-- ─── PAGOS ─── -->
+  <div class="col-12">
     <div class="card border-0 shadow-sm h-100">
-      <div class="card-body text-center py-4">
-        <i class="bi bi-cash-coin fs-1 text-success"></i>
-        <h5 class="mt-3">Pagos del mes</h5>
-        <p class="text-muted small">Reporte de todos los pagos registrados durante el mes actual.</p>
+      <div class="card-header bg-white border-0 pt-4 px-4">
+        <h5 class="mb-0"><i class="bi bi-cash-coin text-success me-2"></i>Pagos</h5>
       </div>
-      <div class="card-footer bg-white border-0 text-center pb-4">
-        <a href="{% url 'pdf_pagos' %}" class="btn btn-success" target="_blank">
-          <i class="bi bi-file-pdf me-2"></i>Descargar PDF
-        </a>
+      <div class="card-body px-4">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="border rounded-3 p-3 text-center h-100">
+              <i class="bi bi-calendar-range fs-3 text-success"></i>
+              <h6 class="mt-2">Por período</h6>
+              <form method="get" action="{% url 'pdf_pagos' %}">
+                <div class="d-flex gap-1 mb-2">
+                  <select name="mes" class="form-select form-select-sm">
+                    <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+                    <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+                    <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+                    <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+                  </select>
+                  <input type="number" name="anio" class="form-control form-control-sm" value="2026" style="max-width:70px;" min="2020" max="2030">
+                </div>
+                <button type="submit" class="btn btn-success btn-sm w-100">
+                  <i class="bi bi-file-pdf me-1"></i>PDF
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="border rounded-3 p-3 text-center h-100">
+              <i class="bi bi-receipt fs-3 text-primary"></i>
+              <h6 class="mt-2">Por orden</h6>
+              <form method="get" action="{% url 'pdf_pagos_orden' %}">
+                <select name="orden" class="form-select form-select-sm mb-2">
+                  <option value="">— Seleccione —</option>
+                  {% for o in ordenes %}
+                    <option value="{{ o.pk }}">#{{ o.pk }} — {{ o.cliente }} ({{ o.vehiculo.placa }})</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary btn-sm w-100">
+                  <i class="bi bi-file-pdf me-1"></i>PDF
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="col-md-4">
+  <!-- ─── INVENTARIO ─── -->
+  <div class="col-12">
     <div class="card border-0 shadow-sm h-100">
-      <div class="card-body text-center py-4">
-        <i class="bi bi-box-seam fs-1 text-info"></i>
-        <h5 class="mt-3">Inventario</h5>
-        <p class="text-muted small">Estado actual del inventario con stock y valores de todos los insumos.</p>
+      <div class="card-header bg-white border-0 pt-4 px-4">
+        <h5 class="mb-0"><i class="bi bi-box-seam text-info me-2"></i>Inventario</h5>
       </div>
-      <div class="card-footer bg-white border-0 text-center pb-4">
-        <a href="{% url 'pdf_inventario' %}" class="btn btn-info" target="_blank">
-          <i class="bi bi-file-pdf me-2"></i>Descargar PDF
-        </a>
+      <div class="card-body px-4">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="border rounded-3 p-3 text-center h-100">
+              <i class="bi bi-clipboard-data fs-3 text-info"></i>
+              <h6 class="mt-2">General</h6>
+              <p class="text-muted small">Stock actual de todos los insumos.</p>
+              <a href="{% url 'pdf_inventario' %}" class="btn btn-info btn-sm w-100" target="_blank">
+                <i class="bi bi-file-pdf me-1"></i>PDF
+              </a>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="border rounded-3 p-3 text-center h-100">
+              <i class="bi bi-arrow-left-right fs-3 text-success"></i>
+              <h6 class="mt-2">Movimientos</h6>
+              <form method="get" action="{% url 'pdf_movimientos_inventario' %}">
+                <select name="insumo" class="form-select form-select-sm mb-1">
+                  <option value="">Todos los insumos</option>
+                  {% for i in insumos %}
+                    <option value="{{ i.pk }}">{{ i.nombre }}</option>
+                  {% endfor %}
+                </select>
+                <div class="d-flex gap-1 mb-2">
+                  <select name="mes" class="form-select form-select-sm">
+                    <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+                    <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+                    <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+                    <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+                  </select>
+                  <input type="number" name="anio" class="form-control form-control-sm" value="2026" style="max-width:70px;" min="2020" max="2030">
+                </div>
+                <button type="submit" class="btn btn-success btn-sm w-100">
+                  <i class="bi bi-file-pdf me-1"></i>PDF
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
