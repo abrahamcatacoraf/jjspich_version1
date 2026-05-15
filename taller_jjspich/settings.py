@@ -9,6 +9,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,.onrender.com').split(',')
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -81,3 +82,58 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/login/'
+
+JAZZMIN_SETTINGS = {
+    "site_header": "JJ SPICH - Administración",
+    "site_brand": "JJ SPICH",
+    "welcome_sign": "Bienvenido al panel del taller",
+    "copyright": "JJ SPICH - Taller de Chapa y Pintura",
+    "topmenu_links": [
+        {"name": "Ir al sistema", "url": "/", "icon": "fas fa-home"},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "order_with_respect_to": ["auth", "clientes", "vehiculos", "ordenes", "inventario", "pagos", "auditoria"],
+    "custom_css": "admin/css/custom.css",
+    "icons": {
+        "auth.User": "fas fa-user",
+        "clientes.Cliente": "fas fa-users",
+        "vehiculos.Vehiculo": "fas fa-car",
+        "ordenes.Orden": "fas fa-clipboard-list",
+        "pagos.Pago": "fas fa-money-bill-wave",
+        "inventario.Insumo": "fas fa-box",
+        "inventario.MovimientoInsumo": "fas fa-exchange-alt",
+        "auditoria.Auditoria": "fas fa-history",
+    },
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-warning",
+    "navbar": "navbar-light",
+    "no_navbar_border": True,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-light-warning",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "united",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+    },
+}
