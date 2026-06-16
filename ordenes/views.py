@@ -5,6 +5,7 @@ from taller_jjspich.decoradores import solo_admin
 from auditoria.utils import registrar, generar_detalle_edicion
 from .models import Orden, HistorialAdelanto
 from .forms import OrdenForm, AdelantoForm
+from pagos.models import Pago
 
 @login_required
 def lista_ordenes(request):
@@ -39,6 +40,13 @@ def nueva_orden(request):
                     usuario=request.user,
                     accion='registro',
                     monto=orden.primer_adelanto,
+                    observacion='Primer adelanto al crear la orden'
+                )
+                Pago.objects.create(
+                    orden=orden,
+                    monto=orden.primer_adelanto,
+                    metodo='efectivo',
+                    es_adelanto=True,
                     observacion='Primer adelanto al crear la orden'
                 )
             messages.success(request, 'Orden registrada correctamente.')

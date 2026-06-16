@@ -22,3 +22,10 @@ class VehiculoForm(forms.ModelForm):
             'kilometraje':   forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 50000', 'step': '0.01'}),
             'gasolina':      forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '0-100', 'min': '0', 'max': '100', 'step': '0.01'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.instance.pk:
+            self.fields['kilometraje'].initial = None
+            self.fields['gasolina'].initial = None
+

@@ -16,6 +16,12 @@ class InsumoForm(forms.ModelForm):
             'stock_minimo':    forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.instance.pk:
+            self.fields['cantidad'].initial = None
+            self.fields['precio_unitario'].initial = None
+
 class AjusteStockForm(forms.Form):
     TIPOS = [
         ('entrada', 'Entrada de stock'),

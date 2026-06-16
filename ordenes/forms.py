@@ -28,6 +28,10 @@ class OrdenForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        if not self.instance.pk:
+            self.fields['costo_estimado'].initial = None
+            self.fields['primer_adelanto'].initial = None
+
         self.fields['tecnico'].queryset = User.objects.filter(groups__name='Tecnico')
         self.fields['tecnico'].empty_label = '— Sin asignar —'
 
