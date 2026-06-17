@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ cotizacion.numero }} — JJ SPICH</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      padding: 20px;
+    }
+    .toolbar {
+      max-width: 800px;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .toolbar button, .toolbar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+    }
+    .btn-print {
+      background: #17a2b8;
+      color: #fff;
+    }
+    .btn-print:hover { background: #138496; }
+    .btn-download {
+      background: #e67e22;
+      color: #fff;
+    }
+    .btn-download:hover { background: #d35400; }
+    .btn-back {
+      background: transparent;
+      color: #6c757d;
+      border: 1px solid #ced4da;
+    }
+    .btn-back:hover { background: #f8f9fa; }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 50px 55px 40px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      border-radius: 4px;
+      min-height: 1050px;
+    }
+    .logo-area {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .logo-area img {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      box-shadow: 0 0 0 4px #fff, 0 0 0 6px rgba(230,126,34,0.3);
+    }
+    .taller-title {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a2e;
+      letter-spacing: 0.5px;
+      margin-top: 10px;
+      line-height: 1.3;
+    }
+    .taller-title span { display: block; }
+    .taller-sub {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    .line-orange {
+      border: none;
+      height: 2px;
+      background: #e67e22;
+      margin: 0;
+    }
+    .cot-titulo {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #e67e22;
+      padding: 8px 0;
+    }
+    .info-grid {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 4px;
+    }
+    .info-grid > div { flex: 1; }
+    .info-grid label {
+      font-size: 11px;
+      color: #888;
+      display: block;
+      margin-bottom: 1px;
+    }
+    .info-grid .valor {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+    .section-header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      margin-top: 18px;
+      border-radius: 3px 3px 0 0;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .data-table th {
+      background: #f8f9fa;
+      padding: 6px 10px;
+      text-align: left;
+      font-size: 11px;
+      color: #888;
+      border: 1px solid #dee2e6;
+    }
+    .data-table td {
+      padding: 7px 10px;
+      border: 1px solid #dee2e6;
+      color: #1a1a2e;
+      font-weight: 600;
+    }
+    .data-table tr:nth-child(2) td { background: #fafafa; }
+    .data-table tr:nth-child(4) td { background: #fafafa; }
+    .diag-box {
+      background: #fafafa;
+      border: 1px solid #dee2e6;
+      border-top: none;
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #333;
+      border-radius: 0 0 3px 3px;
+    }
+    .costo-box {
+      border: 2px solid #e67e22;
+      background: #fff8f0;
+      border-radius: 3px;
+      padding: 14px 20px;
+      margin-top: 18px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 20px;
+    }
+    .costo-label { font-size: 13px; color: #555; }
+    .costo-monto { font-size: 24px; font-weight: 700; color: #1a1a2e; }
+    .notas-text {
+      font-size: 11px;
+      color: #666;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+    .firmas {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+    }
+    .firma-item { text-align: center; width: 45%; }
+    .firma-linea {
+      border-top: 1px solid #333;
+      width: 100%;
+      margin-bottom: 4px;
+      padding-top: 8px;
+    }
+    .firma-label { font-size: 11px; color: #888; }
+    .footer-text {
+      text-align: center;
+      font-size: 9px;
+      color: #bbb;
+      margin-top: 30px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .toolbar { display: none !important; }
+      .page {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 30px 40px;
+        min-height: auto;
+        margin: 0;
+        max-width: none;
+      }
+      .logo-area img { box-shadow: 0 0 0 4px #fff, 0 0 0 6px rgba(230,126,34,0.3); }
+      @page { margin: 0.6in 0.5in; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <button onclick="window.print()" class="btn-print">
+      <i class="bi bi-printer"></i> Imprimir
+    </button>
+    <a href="{% url 'pdf_cotizacion' cotizacion.pk %}" class="btn-download">
+      <i class="bi bi-download"></i> Descargar PDF
+    </a>
+    <a href="{% url 'detalle_cotizacion' cotizacion.pk %}" class="btn-back">
+      <i class="bi bi-arrow-left"></i> Volver
+    </a>
+  </div>
+
+  <div class="page">
+
+    {% load static %}
+    <div class="logo-area">
+      <img src="{% static 'img/logo_jjspich.png' %}" alt="JJ SPICH">
+    </div>
+
+    <div class="taller-title">
+      <span>Taller de Chapa y Pintura</span>
+      <span>JJ SPICH</span>
+    </div>
+    <div class="taller-sub">Mecánica General · Chapa y Pintura · Servicio Especializado</div>
+
+    <hr class="line-orange">
+
+    <div class="cot-titulo">COTIZACIÓN {{ cotizacion.numero }}</div>
+
+    <hr class="line-orange">
+
+    <div class="info-grid" style="margin-top:10px;">
+      <div>
+        <label>Fecha de emisión</label>
+        <span class="valor">{{ cotizacion.fecha|date:"d/m/Y" }}</span>
+      </div>
+      <div>
+        <label>Plazo de validez</label>
+        <span class="valor">{{ cotizacion.plazo }}</span>
+      </div>
+      <div>
+        <label>Técnico</label>
+        <span class="valor">{{ cotizacion.tecnico }}</span>
+      </div>
+    </div>
+
+    <div class="section-header">DATOS DEL CLIENTE Y VEHÍCULO</div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:33%">Cliente</th>
+          <th style="width:34%">Vehículo</th>
+          <th style="width:33%">Placa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ cotizacion.cliente_nombre }}</td>
+          <td>{{ cotizacion.vehiculo_marca }} {{ cotizacion.vehiculo_modelo }}</td>
+          <td>{{ cotizacion.vehiculo_placa }}</td>
+        </tr>
+        <tr>
+          <th>Color</th>
+          <th>Modelo</th>
+          <th>Año</th>
+        </tr>
+        <tr>
+          <td>{{ cotizacion.vehiculo_color }}</td>
+          <td>{{ cotizacion.vehiculo_modelo }}</td>
+          <td>{{ cotizacion.vehiculo_anio }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-header">DIAGNÓSTICO TÉCNICO</div>
+    <div class="diag-box">{{ cotizacion.diagnostico|linebreaks }}</div>
+
+    <div class="section-header">COSTO ESTIMADO</div>
+    <div class="costo-box">
+      <span class="costo-label">Total estimado de reparación:</span>
+      <span class="costo-monto">Bs. {{ cotizacion.costo_estimado|floatformat:2 }}</span>
+    </div>
+
+    {% if cotizacion.notas %}
+    <div class="notas-text">
+      <strong>Notas:</strong> {{ cotizacion.notas|linebreaks }}
+    </div>
+    {% endif %}
+
+    <div class="firmas">
+      <div class="firma-item">
+        <div class="firma-linea">____________________________</div>
+        <div class="firma-label">Firma del Técnico</div>
+      </div>
+      <div class="firma-item">
+        <div class="firma-linea">____________________________</div>
+        <div class="firma-label">Firma del Cliente</div>
+      </div>
+    </div>
+
+    <div class="footer-text">
+      JJ SPICH — Taller de Chapa y Pintura &nbsp;|&nbsp;
+      Documento sin valor fiscal
+    </div>
+
+  </div>
+
+</body>
+</html>

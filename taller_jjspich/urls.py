@@ -24,6 +24,7 @@ urlpatterns = [
 
     # Reportes
     path('auditoria/', include('auditoria.urls')),
+    path('cotizaciones/', include('cotizaciones.urls')),
 
     path('reportes/', views.vista_reportes, name='reportes'),
     path('reportes/pdf/ordenes/', views.pdf_ordenes, name='pdf_ordenes'),

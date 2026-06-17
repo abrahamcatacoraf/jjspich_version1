@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'inventario',
     'pagos',
     'auditoria',
+    'cotizaciones',
     'taller_jjspich',
 ]
 
@@ -93,13 +94,14 @@ JAZZMIN_SETTINGS = {
     ],
     "show_sidebar": True,
     "navigation_expanded": True,
-    "order_with_respect_to": ["auth", "clientes", "vehiculos", "ordenes", "inventario", "pagos", "auditoria"],
+    "order_with_respect_to": ["auth", "clientes", "vehiculos", "ordenes", "cotizaciones", "inventario", "pagos", "auditoria"],
     "custom_css": "admin/css/custom.css",
     "icons": {
         "auth.User": "fas fa-user",
         "clientes.Cliente": "fas fa-users",
         "vehiculos.Vehiculo": "fas fa-car",
         "ordenes.Orden": "fas fa-clipboard-list",
+        "cotizaciones.Cotizacion": "fas fa-file-invoice",
         "pagos.Pago": "fas fa-money-bill-wave",
         "inventario.Insumo": "fas fa-box",
         "inventario.MovimientoInsumo": "fas fa-exchange-alt",

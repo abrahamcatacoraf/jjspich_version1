@@ -1,0 +1,65 @@
+{% extends 'base/base.html' %}
+{% block titulo %}Cotizaciones — JJ SPICH{% endblock %}
+{% block subtitulo %}Cotizaciones{% endblock %}
+{% block nav_cotizaciones %}active{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0">Cotizaciones registradas</h4>
+  <a href="{% url 'nueva_cotizacion' %}" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-1"></i> Nueva cotización
+  </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th>N°</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Vehículo</th>
+            <th>Placa</th>
+            <th>Costo (Bs.)</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in cotizaciones %}
+          <tr>
+            <td><strong>{{ c.numero }}</strong></td>
+            <td>{{ c.fecha|date:"d/m/Y" }}</td>
+            <td>{{ c.cliente_nombre }}</td>
+            <td>{{ c.vehiculo_marca }} {{ c.vehiculo_modelo }}</td>
+            <td><span class="badge bg-secondary">{{ c.vehiculo_placa }}</span></td>
+            <td><strong class="text-success">Bs. {{ c.costo_estimado }}</strong></td>
+            <td class="text-center text-nowrap">
+              <a href="{% url 'detalle_cotizacion' c.pk %}" class="btn btn-sm btn-outline-info" title="Ver detalle">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="{% url 'preview_cotizacion' c.pk %}" class="btn btn-sm btn-outline-warning" title="Ver PDF">
+                <i class="bi bi-file-pdf"></i>
+              </a>
+              {% if request.user.is_superuser or 'Administrador' in request.user.groups.all|join:',' %}
+              <a href="{% url 'eliminar_cotizacion' c.pk %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                <i class="bi bi-trash"></i>
+              </a>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-muted py-4">
+              No hay cotizaciones registradas.
+              <a href="{% url 'nueva_cotizacion' %}">Crea la primera</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
