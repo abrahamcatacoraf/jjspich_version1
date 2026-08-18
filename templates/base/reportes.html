@@ -22,8 +22,8 @@
         <p class="text-muted small mb-0">Lista completa de todas las órdenes registradas en el sistema.</p>
       </div>
       <div class="card-footer bg-white border-0 text-center pb-4">
-        <a href="{% url 'pdf_ordenes' %}" class="btn btn-warning" target="_blank">
-          <i class="bi bi-file-pdf me-2"></i>Descargar PDF
+        <a href="{% url 'preview_ordenes' %}" class="btn btn-warning">
+          <i class="bi bi-eye me-2"></i>Ver reporte
         </a>
       </div>
     </div>
@@ -41,7 +41,7 @@
             <div class="border rounded-3 p-3 text-center h-100">
               <i class="bi bi-calendar-range fs-3 text-success"></i>
               <h6 class="mt-2">Por período</h6>
-              <form method="get" action="{% url 'pdf_pagos' %}">
+              <form method="get" action="{% url 'preview_pagos' %}">
                 <div class="d-flex gap-1 mb-2">
                   <select name="mes" class="form-select form-select-sm">
                     <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
@@ -52,7 +52,7 @@
                   <input type="number" name="anio" class="form-control form-control-sm" value="2026" style="max-width:70px;" min="2020" max="2030">
                 </div>
                 <button type="submit" class="btn btn-success btn-sm w-100">
-                  <i class="bi bi-file-pdf me-1"></i>PDF
+                  <i class="bi bi-eye me-1"></i>Ver
                 </button>
               </form>
             </div>
@@ -61,15 +61,15 @@
             <div class="border rounded-3 p-3 text-center h-100">
               <i class="bi bi-receipt fs-3 text-primary"></i>
               <h6 class="mt-2">Por orden</h6>
-              <form method="get" action="{% url 'pdf_pagos_orden' %}">
-                <select name="orden" class="form-select form-select-sm mb-2">
+              <form method="get" action="{% url 'preview_pagos_orden' %}" id="formPagosOrden">
+                <select name="orden" class="form-select form-select-sm mb-2" id="selectOrden">
                   <option value="">— Seleccione —</option>
                   {% for o in ordenes %}
                     <option value="{{ o.pk }}">#{{ o.pk }} — {{ o.cliente }} ({{ o.vehiculo.placa }})</option>
                   {% endfor %}
                 </select>
                 <button type="submit" class="btn btn-primary btn-sm w-100">
-                  <i class="bi bi-file-pdf me-1"></i>PDF
+                  <i class="bi bi-eye me-1"></i>Ver
                 </button>
               </form>
             </div>
@@ -92,8 +92,8 @@
               <i class="bi bi-clipboard-data fs-3 text-info"></i>
               <h6 class="mt-2">General</h6>
               <p class="text-muted small">Stock actual de todos los insumos.</p>
-              <a href="{% url 'pdf_inventario' %}" class="btn btn-info btn-sm w-100" target="_blank">
-                <i class="bi bi-file-pdf me-1"></i>PDF
+              <a href="{% url 'preview_inventario' %}" class="btn btn-info btn-sm w-100">
+                <i class="bi bi-eye me-1"></i>Ver
               </a>
             </div>
           </div>
@@ -101,7 +101,7 @@
             <div class="border rounded-3 p-3 text-center h-100">
               <i class="bi bi-arrow-left-right fs-3 text-success"></i>
               <h6 class="mt-2">Movimientos</h6>
-              <form method="get" action="{% url 'pdf_movimientos_inventario' %}">
+              <form method="get" action="{% url 'preview_movimientos_inventario' %}">
                 <select name="insumo" class="form-select form-select-sm mb-1">
                   <option value="">Todos los insumos</option>
                   {% for i in insumos %}
@@ -118,7 +118,7 @@
                   <input type="number" name="anio" class="form-control form-control-sm" value="2026" style="max-width:70px;" min="2020" max="2030">
                 </div>
                 <button type="submit" class="btn btn-success btn-sm w-100">
-                  <i class="bi bi-file-pdf me-1"></i>PDF
+                  <i class="bi bi-eye me-1"></i>Ver
                 </button>
               </form>
             </div>
@@ -129,4 +129,13 @@
   </div>
 
 </div>
+
+<script>
+  document.getElementById('formPagosOrden').addEventListener('submit', function(e) {
+    if (!document.getElementById('selectOrden').value) {
+      e.preventDefault();
+      alert('Seleccione una opción para continuar');
+    }
+  });
+</script>
 {% endblock %}

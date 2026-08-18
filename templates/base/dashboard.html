@@ -129,6 +129,8 @@
                     <span class="badge bg-warning text-dark">En proceso</span>
                   {% elif orden.estado == 'terminado' %}
                     <span class="badge bg-success">Terminado</span>
+                  {% elif orden.estado == 'finalizado' %}
+                    <span class="badge bg-purple text-white">Finalizado</span>
                   {% else %}
                     <span class="badge bg-secondary">Entregado</span>
                   {% endif %}

@@ -24,6 +24,7 @@
           <option value="recibido"   {% if estado == 'recibido' %}selected{% endif %}>Recibido</option>
           <option value="en_proceso" {% if estado == 'en_proceso' %}selected{% endif %}>En proceso</option>
           <option value="terminado"  {% if estado == 'terminado' %}selected{% endif %}>Terminado</option>
+          <option value="finalizado" {% if estado == 'finalizado' %}selected{% endif %}>Finalizado</option>
           <option value="entregado"  {% if estado == 'entregado' %}selected{% endif %}>Entregado</option>
         </select>
       </div>
@@ -75,6 +76,8 @@
                 <span class="badge bg-warning text-dark">En proceso</span>
               {% elif orden.estado == 'terminado' %}
                 <span class="badge bg-success">Terminado</span>
+              {% elif orden.estado == 'finalizado' %}
+                <span class="badge bg-purple text-white">Finalizado</span>
               {% else %}
                 <span class="badge bg-secondary">Entregado</span>
               {% endif %}

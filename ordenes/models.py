@@ -8,6 +8,7 @@ class Orden(models.Model):
         ('recibido',   'Recibido'),
         ('en_proceso', 'En proceso'),
         ('terminado',  'Terminado'),
+        ('finalizado', 'Finalizado'),
         ('entregado',  'Entregado'),
     ]
 

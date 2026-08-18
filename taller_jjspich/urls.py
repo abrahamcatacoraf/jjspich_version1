@@ -27,6 +27,11 @@ urlpatterns = [
     path('cotizaciones/', include('cotizaciones.urls')),
 
     path('reportes/', views.vista_reportes, name='reportes'),
+    path('reportes/preview/ordenes/', views.preview_ordenes, name='preview_ordenes'),
+    path('reportes/preview/pagos/', views.preview_pagos, name='preview_pagos'),
+    path('reportes/preview/inventario/', views.preview_inventario, name='preview_inventario'),
+    path('reportes/preview/inventario/movimientos/', views.preview_movimientos_inventario, name='preview_movimientos_inventario'),
+    path('reportes/preview/pagos/orden/', views.preview_pagos_orden, name='preview_pagos_orden'),
     path('reportes/pdf/ordenes/', views.pdf_ordenes, name='pdf_ordenes'),
     path('reportes/pdf/pagos/', views.pdf_pagos, name='pdf_pagos'),
     path('reportes/pdf/inventario/', views.pdf_inventario, name='pdf_inventario'),

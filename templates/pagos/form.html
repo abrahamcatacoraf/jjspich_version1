@@ -17,26 +17,69 @@
 
             <div class="col-12">
               <label class="form-label">Orden de trabajo *</label>
+              {% if orden_fija %}
+              <input type="hidden" name="orden" value="{{ orden_fija }}">
+              {% endif %}
               {{ form.orden }}
+              {% if form.orden.errors %}
+                <div class="text-danger small mt-1">{{ form.orden.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-12" id="saldoBox" style="display:none;">
+              <div class="alert alert-info py-2 mb-0">
+                Saldo pendiente: <strong>Bs. <span id="saldoDisplay">0.00</span></strong>
+              </div>
             </div>
 
             <div class="col-12">
               <label class="form-label">Tipo de pago *</label>
               {{ form.tipo_pago }}
+              {% if form.tipo_pago.errors %}
+                <div class="text-danger small mt-1">{{ form.tipo_pago.errors.0 }}</div>
+              {% endif %}
             </div>
 
             <div id="camposPago" style="display:none;" class="row g-3 px-0">
               <div class="col-md-6">
                 <label class="form-label">Monto (Bs.) *</label>
                 {{ form.monto }}
+                {% if form.monto.errors %}
+                  <div class="text-danger small mt-1">{{ form.monto.errors.0 }}</div>
+                {% endif %}
               </div>
               <div class="col-md-6">
                 <label class="form-label">Método de pago *</label>
                 {{ form.metodo }}
+                {% if form.metodo.errors %}
+                  <div class="text-danger small mt-1">{{ form.metodo.errors.0 }}</div>
+                {% endif %}
               </div>
               <div class="col-12">
                 <label class="form-label">Observaciones</label>
                 {{ form.observacion }}
+                {% if form.observacion.errors %}
+                  <div class="text-danger small mt-1">{{ form.observacion.errors.0 }}</div>
+                {% endif %}
+              </div>
+
+              <div class="col-12" id="avisoExceso" style="display:none;">
+                <div class="alert alert-danger py-2 mb-0">
+                  <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                  El monto no puede exceder el saldo pendiente.
+                </div>
+              </div>
+              <div class="col-12" id="avisoFinalCoincide" style="display:none;">
+                <div class="alert alert-danger py-2 mb-0">
+                  <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                  <span id="avisoFinalCoincideTexto"></span>
+                </div>
+              </div>
+              <div class="col-12" id="avisoFinaliza" style="display:none;">
+                <div class="alert alert-warning py-2 mb-0">
+                  <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                  Esta orden de trabajo finalizará si decide agregar este monto.
+                </div>
               </div>
             </div>
 
@@ -55,16 +98,118 @@
   </div>
 </div>
 
+{{ ordenes_info|json_script:"ordenes-info" }}
+
 <script>
+  const ordenesInfo = JSON.parse(document.getElementById('ordenes-info').textContent);
+  const selectOrden = document.getElementById('id_orden');
+  const selectTipo = document.getElementById('id_tipo_pago');
+  const inputMonto = document.getElementById('id_monto');
+  const btnGuardar = document.getElementById('btnGuardar');
+  const campos = document.getElementById('camposPago');
+  const saldoBox = document.getElementById('saldoBox');
+  const saldoDisplay = document.getElementById('saldoDisplay');
+  const avisoExceso = document.getElementById('avisoExceso');
+  const avisoFinalCoincide = document.getElementById('avisoFinalCoincide');
+  const avisoFinalCoincideTexto = document.getElementById('avisoFinalCoincideTexto');
+  const avisoFinaliza = document.getElementById('avisoFinaliza');
+
+  const EPS = 0.011;
+
+  function saldoActual() {
+    const info = ordenesInfo.find(o => String(o.id) === selectOrden.value);
+    return info ? info.saldo : null;
+  }
+
+  function actualizarSaldo() {
+    const saldo = saldoActual();
+    if (saldo === null) {
+      saldoBox.style.display = 'none';
+      return;
+    }
+    saldoBox.style.display = 'block';
+    saldoDisplay.textContent = saldo.toFixed(2);
+  }
+
+  function limpiarAvisos() {
+    avisoExceso.style.display = 'none';
+    avisoFinalCoincide.style.display = 'none';
+    avisoFinaliza.style.display = 'none';
+  }
+
+  function validarMonto() {
+    const saldo = saldoActual();
+    if (saldo === null || !selectTipo.value) {
+      limpiarAvisos();
+      return;
+    }
+    const monto = parseFloat(inputMonto.value);
+    if (isNaN(monto)) {
+      limpiarAvisos();
+      return;
+    }
+    limpiarAvisos();
+    if (selectTipo.value === 'final') {
+      if (Math.abs(monto - saldo) > EPS) {
+        avisoFinalCoincideTexto.textContent =
+          'El pago final no coincide con el saldo pendiente (Bs. ' + saldo.toFixed(2) + ').';
+        avisoFinalCoincide.style.display = 'block';
+      }
+    } else if (monto > saldo + EPS) {
+      avisoExceso.style.display = 'block';
+    } else if (Math.abs(monto - saldo) <= EPS) {
+      avisoFinaliza.style.display = 'block';
+    }
+  }
+
   document.getElementById('id_tipo_pago').addEventListener('change', function() {
-    var campos = document.getElementById('camposPago');
-    var btn = document.getElementById('btnGuardar');
-    if (this.value) {
-      campos.style.display = 'flex';
-      btn.disabled = false;
-    } else {
-      campos.style.display = 'none';
-      btn.disabled = true;
+    campos.style.display = 'flex';
+    btnGuardar.disabled = false;
+    limpiarAvisos();
+    if (this.value === 'final') {
+      const saldo = saldoActual();
+      if (saldo !== null) {
+        inputMonto.value = saldo.toFixed(2);
+      }
+    } else if (this.value === 'adelanto') {
+      inputMonto.value = '';
+    }
+    validarMonto();
+  });
+
+  selectOrden.addEventListener('change', function() {
+    actualizarSaldo();
+    inputMonto.value = '';
+    limpiarAvisos();
+    if (selectTipo.value === 'final') {
+      const saldo = saldoActual();
+      if (saldo !== null) {
+        inputMonto.value = saldo.toFixed(2);
+      }
+    }
+    validarMonto();
+  });
+
+  inputMonto.addEventListener('input', validarMonto);
+
+  actualizarSaldo();
+
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const saldo = saldoActual();
+    const monto = parseFloat(inputMonto.value);
+    if (selectTipo.value === 'final') {
+      if (saldo !== null && !isNaN(monto) && Math.abs(monto - saldo) > EPS) {
+        alert('El pago final no coincide con el saldo pendiente (Bs. ' + saldo.toFixed(2) + ').');
+        e.preventDefault();
+        return;
+      }
+      if (!confirm('¿Estás seguro de finalizar esta Orden de trabajo?')) {
+        e.preventDefault();
+      }
+    } else if (selectTipo.value === 'adelanto' && saldo !== null && !isNaN(monto) && Math.abs(monto - saldo) <= EPS) {
+      if (!confirm('Esta orden de trabajo finalizará si decide agregar este monto. ¿Desea continuar?')) {
+        e.preventDefault();
+      }
     }
   });
 </script>

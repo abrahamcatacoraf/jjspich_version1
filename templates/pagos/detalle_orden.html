@@ -6,10 +6,21 @@
 {% block contenido %}
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h4 class="mb-0">Pagos — Orden #{{ orden.pk }}</h4>
-  <a href="{% url 'nuevo_pago' %}" class="btn btn-primary">
+  {% if orden.estado != 'finalizado' %}
+  <a href="{% url 'nuevo_pago' %}?orden={{ orden.pk }}" class="btn btn-primary">
     <i class="bi bi-plus-lg me-1"></i> Registrar pago
   </a>
+  {% else %}
+  <span class="badge bg-purple text-white fs-6">Orden finalizada</span>
+  {% endif %}
 </div>
+
+{% if orden.estado == 'finalizado' %}
+<div class="alert alert-info d-flex align-items-center">
+  <i class="bi bi-info-circle-fill me-2"></i>
+  <div>Orden finalizada — no se pueden registrar más pagos.</div>
+</div>
+{% endif %}
 
 <div class="row g-3 mb-4">
   <div class="col-md-4">

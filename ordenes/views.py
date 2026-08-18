@@ -49,6 +49,8 @@ def nueva_orden(request):
                     es_adelanto=True,
                     observacion='Primer adelanto al crear la orden'
                 )
+                orden.estado = 'en_proceso'
+                orden.save(update_fields=['estado'])
             messages.success(request, 'Orden registrada correctamente.')
             return redirect('lista_ordenes')
     else:

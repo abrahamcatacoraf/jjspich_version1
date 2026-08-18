@@ -63,6 +63,8 @@
               <span class="badge bg-warning text-dark fs-6">En proceso</span>
             {% elif orden.estado == 'terminado' %}
               <span class="badge bg-success fs-6">Terminado</span>
+            {% elif orden.estado == 'finalizado' %}
+              <span class="badge bg-purple text-white fs-6">Finalizado</span>
             {% elif orden.estado == 'entregado' %}
               <span class="badge bg-secondary fs-6">Entregado</span>
             {% endif %}

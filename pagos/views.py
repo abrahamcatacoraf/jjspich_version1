@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.db.models import Sum
+from django.db.models import Sum, DecimalField
+from django.db.models.functions import Coalesce
 from django.contrib.auth.decorators import login_required
 from taller_jjspich.decoradores import solo_admin
 from auditoria.utils import registrar
@@ -19,19 +20,56 @@ def lista_pagos(request):
         'total_mes': total_mes,
     })
 
+def ordenes_info_context(queryset):
+    ordenes = queryset.annotate(
+        total_pagado=Coalesce(
+            Sum('pagos__monto'), 0,
+            output_field=DecimalField(max_digits=10, decimal_places=2)
+        )
+    )
+    return [
+        {
+            'id': o.pk,
+            'label': f'#{o.pk} — {o.cliente}',
+            'saldo': float(o.costo_estimado - o.total_pagado),
+        }
+        for o in ordenes
+    ]
+
+
 @login_required
 def nuevo_pago(request):
+    orden_fija = request.GET.get('orden') or request.POST.get('orden')
+    if orden_fija:
+        try:
+            orden = Orden.objects.get(pk=orden_fija)
+        except (Orden.DoesNotExist, ValueError, TypeError):
+            orden = None
+        if orden is None or orden.estado == 'finalizado':
+            orden_fija = None
     if request.method == 'POST':
-        form = PagoForm(request.POST)
+        form = PagoForm(request.POST, orden_fija=orden_fija)
         if form.is_valid():
             pago = form.save()
+            orden = pago.orden
+            total_pagado = orden.pagos.aggregate(total=Sum('monto'))['total'] or 0
+            saldo = orden.costo_estimado - total_pagado
+            if pago.es_adelanto:
+                if saldo <= 0:
+                    Orden.objects.filter(pk=orden.pk).update(estado='finalizado')
+                elif orden.estado in ('recibido', 'en_proceso'):
+                    Orden.objects.filter(pk=orden.pk).update(estado='en_proceso')
+            else:
+                Orden.objects.filter(pk=orden.pk).update(estado='finalizado')
             registrar(request.user, 'creacion', 'Pago', pago.pk, f"Se registró Pago de Bs.{pago.monto} — Orden #{pago.orden.pk}")
             messages.success(request, 'Pago registrado correctamente.')
             return redirect('lista_pagos')
     else:
-        form = PagoForm()
+        form = PagoForm(orden_fija=orden_fija)
     return render(request, 'pagos/form.html', {
-        'form': form, 'titulo': 'Registrar Pago'
+        'form': form, 'titulo': 'Registrar Pago',
+        'orden_fija': orden_fija,
+        'ordenes_info': ordenes_info_context(form.fields['orden'].queryset),
     })
 
 @login_required
