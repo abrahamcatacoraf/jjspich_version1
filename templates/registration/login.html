@@ -109,7 +109,14 @@
       <p class="text-muted small">La Paz, Bolivia</p>
     </div>
 
-    {% if form.errors %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-danger py-2 mb-3">
+          <i class="bi bi-exclamation-circle me-1"></i>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% elif form.errors %}
       <div class="alert alert-danger py-2 mb-3">
         <i class="bi bi-exclamation-circle me-1"></i>
         Usuario o contraseña incorrectos.

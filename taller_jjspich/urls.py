@@ -4,6 +4,8 @@ from django.contrib.auth import views as auth_views
 from . import views
 from django.shortcuts import render
 
+from seguridad import views as seguridad_views
+
 def sin_permiso(request):
     return render(request, 'base/sin_permiso.html')
 
@@ -11,8 +13,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Login y logout
-    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('login/', seguridad_views.LoginViewSeguro, name='login'),
+    path('login/2fa/', seguridad_views.verificar_2fa, name='verificar_2fa'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('seguridad/', include('seguridad.urls')),
 
     # Sistema
     path('', views.dashboard, name='dashboard'),
@@ -40,4 +44,8 @@ urlpatterns = [
     path('reportes/pdf/pagos/orden/', views.pdf_pagos_orden, name='pdf_pagos_orden'),
 
     path('sin-permiso/', sin_permiso, name='sin_permiso'),
+
+    # PWA
+    path('manifest.json', views.manifest_web, name='manifest'),
+    path('sw.js', views.service_worker, name='service_worker'),
 ]

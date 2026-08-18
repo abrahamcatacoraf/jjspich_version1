@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'pagos',
     'auditoria',
     'cotizaciones',
+    'seguridad',
     'taller_jjspich',
 ]
 

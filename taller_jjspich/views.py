@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
@@ -246,3 +247,13 @@ def pdf_pagos_orden(request):
     pagos = Pago.objects.filter(orden=orden).select_related('orden', 'orden__cliente')
     total = pagos.aggregate(total=Sum('monto'))['total'] or 0
     return reporte_pagos_orden(pagos, total, orden)
+
+
+def manifest_web(request):
+    contenido = render(request, 'pwa/manifest.json').content
+    return HttpResponse(contenido, content_type='application/manifest+json')
+
+
+def service_worker(request):
+    contenido = render(request, 'pwa/sw.js').content
+    return HttpResponse(contenido, content_type='application/javascript')

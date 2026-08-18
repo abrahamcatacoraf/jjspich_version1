@@ -1,0 +1,66 @@
+{% extends 'base/base.html' %}
+
+{% block titulo %}Doble factor — JJ SPICH{% endblock %}
+{% block subtitulo %}Seguridad de la cuenta{% endblock %}
+{% block nav_seguridad %}active{% endblock %}
+
+{% block contenido %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 pt-4 px-4">
+        <h5 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Autenticación de doble factor (2FA)</h5>
+      </div>
+      <div class="card-body p-4">
+        {% if activa %}
+          <div class="alert alert-success d-flex align-items-center">
+            <i class="bi bi-check-circle me-2"></i>
+            <div>
+              La autenticación de doble factor está <strong>ACTIVA</strong> para tu cuenta.
+              Al iniciar sesión se te pedirá un código de 6 dígitos adicional.
+            </div>
+          </div>
+          <form method="post" action="{% url 'desactivar_2fa' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger">
+              <i class="bi bi-shield-x me-1"></i> Desactivar 2FA
+            </button>
+          </form>
+        {% else %}
+          <ol class="mb-4">
+            <li>Instala una aplicación de autenticación en tu celular
+                (p. ej. Google Authenticator o Authy).</li>
+            <li>Escanea el código QR de abajo (o ingresa la clave manualmente).</li>
+            <li>Escribe el código de 6 dígitos que muestra la aplicación para activar.</li>
+          </ol>
+
+          <div class="text-center my-3">
+            <img src="data:image/png;base64,{{ qr_data }}" alt="Código QR 2FA"
+                 style="width:210px;height:210px;border:1px solid #ddd;border-radius:8px;padding:6px;">
+          </div>
+
+          <p class="text-muted small mb-1">
+            Si no puedes escanear el código, ingresa esta clave manualmente:
+          </p>
+          <div class="p-2 mb-4 text-center rounded"
+               style="background:#f8f9fa;font-family:monospace;letter-spacing:2px;font-size:14px;">
+            {{ secreto }}
+          </div>
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Código de verificación (6 dígitos)</label>
+              <input type="text" name="codigo" class="form-control"
+                     maxlength="6" inputmode="numeric" placeholder="••••••" required autofocus>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg me-1"></i> Activar 2FA
+            </button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
