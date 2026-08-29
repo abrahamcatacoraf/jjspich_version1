@@ -140,3 +140,4 @@ JAZZMIN_UI_TWEAKS = {
         "danger": "btn-danger",
     },
 }
+TEST_RUNNER = "django_prismtest.runner.PrismDiscoverRunner"

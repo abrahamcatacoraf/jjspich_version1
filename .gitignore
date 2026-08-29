@@ -18,3 +18,9 @@ Thumbs.db
 Desktop.ini
 # Agente local
 AGENTS.md
+# Config local de opencode (no se sube)
+opencode.json
+# Carpeta de documentos de tesis (no se sube)
+DOCUMENTO/
+# Documento de caso de estudio (no se sube)
+Caso_de_estudio.docx
