@@ -38,6 +38,12 @@ def generar_pdf(cotizacion, disposicion='attachment'):
         fontSize=10, textColor=colors.HexColor('#666666'),
         spaceAfter=6, alignment=TA_CENTER,
     )
+    estilo_contacto = ParagraphStyle(
+        'contacto', parent=styles['Normal'],
+        fontSize=10, textColor=colors.HexColor('#e67e22'),
+        fontName='Helvetica-Bold', leading=14,
+        alignment=TA_RIGHT,
+    )
     estilo_cotizacion = ParagraphStyle(
         'cotitulo', parent=styles['Normal'],
         fontSize=16, textColor=colors.HexColor('#e67e22'),
@@ -132,8 +138,18 @@ def generar_pdf(cotizacion, disposicion='attachment'):
 
     elementos.append(Paragraph("Taller de Chapa y Pintura", estilo_taller))
     elementos.append(Paragraph("JJ SPICH", estilo_taller))
-    elementos.append(Paragraph("Mecánica General · Chapa y Pintura · Servicio Especializado",
-                               estilo_subtaller))
+    contacto_header = [
+        [Paragraph("Mecánica General · Chapa y Pintura · Servicio Especializado", estilo_subtaller),
+         Paragraph("☎ 72543915 · ✉ jadeckael@gmail.com", estilo_contacto)],
+    ]
+    tbl_contacto = Table(contacto_header, colWidths=[ancho * 0.62, ancho * 0.38])
+    tbl_contacto.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+    ]))
+    elementos.append(tbl_contacto)
     elementos.append(Spacer(1, 4))
 
     # Línea decorativa + título de cotización

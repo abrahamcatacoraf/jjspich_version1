@@ -93,6 +93,30 @@
       color: #888;
       margin-bottom: 12px;
     }
+    .contacto-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .contacto-row > span:first-child {
+      text-align: center;
+      flex: 1 1 auto;
+    }
+    .contacto-info {
+      font-size: 12px;
+      font-weight: 700;
+      color: #e67e22;
+      white-space: nowrap;
+      text-align: right;
+    }
+    .contacto-info i { margin-right: 4px; font-size: 13px; }
+    @media (max-width: 560px) {
+      .contacto-row { justify-content: center; }
+      .contacto-info { white-space: normal; text-align: center; }
+    }
     .line-orange {
       border: none;
       height: 2px;
@@ -251,7 +275,13 @@
     </div>
 
     <div class="taller-title">Taller de Chapa y Pintura JJ SPICH</div>
-    <div class="taller-sub">Mecánica General · Chapa y Pintura · Servicio Especializado</div>
+    <div class="taller-sub contacto-row">
+      <span>Mecánica General · Chapa y Pintura · Servicio Especializado</span>
+      <span class="contacto-info">
+        <i class="bi bi-whatsapp"></i> 72543915 &nbsp;
+        <i class="bi bi-envelope-fill"></i> jadeckael@gmail.com
+      </span>
+    </div>
 
     <hr class="line-orange">
 
