@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from taller_jjspich.decoradores import solo_admin
-from auditoria.utils import registrar
+from auditoria.utils import registrar, generar_detalle_edicion
 from .models import Cotizacion
 from .forms import CotizacionForm
 from .reportes import generar_pdf
@@ -33,6 +33,40 @@ def nueva_cotizacion(request):
         form = CotizacionForm()
     return render(request, 'cotizaciones/form.html', {
         'form': form, 'titulo': 'Nueva Cotización',
+    })
+
+
+@login_required
+def editar_cotizacion(request, pk):
+    cotizacion = get_object_or_404(Cotizacion, pk=pk)
+    if request.method == 'POST':
+        form = CotizacionForm(request.POST, instance=cotizacion)
+        if form.is_valid():
+            etiquetas = {
+                'fecha': 'Fecha de emisión',
+                'plazo': 'Plazo de validez',
+                'tecnico': 'Técnico',
+                'cliente_nombre': 'Cliente',
+                'vehiculo_marca': 'Marca',
+                'vehiculo_modelo': 'Modelo',
+                'vehiculo_placa': 'Placa',
+                'vehiculo_color': 'Color',
+                'vehiculo_anio': 'Año',
+                'diagnostico': 'Diagnóstico técnico',
+                'costo_estimado': 'Costo estimado',
+                'notas': 'Notas adicionales',
+            }
+            cotizacion = form.save()
+            detalle = generar_detalle_edicion(form, etiquetas)
+            registrar(request.user, 'edicion', 'Cotizacion', cotizacion.pk,
+                      f"Se editó {cotizacion.numero} — {cotizacion.cliente_nombre} — {detalle}")
+            messages.success(
+                request, f'Cotización {cotizacion.numero} actualizada correctamente.')
+            return redirect('detalle_cotizacion', pk=cotizacion.pk)
+    else:
+        form = CotizacionForm(instance=cotizacion)
+    return render(request, 'cotizaciones/form.html', {
+        'form': form, 'titulo': f'Editar Cotización {cotizacion.numero}',
     })
 
 

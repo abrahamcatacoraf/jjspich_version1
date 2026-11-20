@@ -39,6 +39,9 @@
               <a href="{% url 'detalle_cotizacion' c.pk %}" class="btn btn-sm btn-outline-info" title="Ver detalle">
                 <i class="bi bi-eye"></i>
               </a>
+              <a href="{% url 'editar_cotizacion' c.pk %}" class="btn btn-sm btn-outline-primary" title="Editar">
+                <i class="bi bi-pencil"></i>
+              </a>
               <a href="{% url 'preview_cotizacion' c.pk %}" class="btn btn-sm btn-outline-warning" title="Ver PDF">
                 <i class="bi bi-file-pdf"></i>
               </a>

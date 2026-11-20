@@ -83,3 +83,71 @@ class CotizacionViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/sin-permiso/')
         self.assertTrue(Cotizacion.objects.filter(pk=self.cotizacion.pk).exists())
+
+    def _datos_edicion(self, **cambios):
+        datos = {
+            'fecha': date.today().isoformat(),
+            'plazo': '30 días',
+            'tecnico': 'Luis Mamani',
+            'cliente_nombre': 'Juan Pérez Actualizado',
+            'vehiculo_marca': 'Toyota',
+            'vehiculo_modelo': 'Corolla',
+            'vehiculo_placa': '1234ABC',
+            'vehiculo_color': 'Azul',
+            'vehiculo_anio': 2020,
+            'diagnostico': 'Reparación completa de carrocería',
+            'costo_estimado': '950.00',
+            'notas': '',
+        }
+        datos.update(cambios)
+        return datos
+
+    def test_editar_cotizacion_get(self):
+        response = self.client.get(f'/cotizaciones/{self.cotizacion.pk}/editar/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Editar Cotización')
+
+    def test_editar_cotizacion_actualiza_datos(self):
+        response = self.client.post(
+            f'/cotizaciones/{self.cotizacion.pk}/editar/',
+            self._datos_edicion(),
+        )
+        self.assertEqual(response.status_code, 302)
+        self.cotizacion.refresh_from_db()
+        self.assertEqual(self.cotizacion.cliente_nombre, 'Juan Pérez Actualizado')
+        self.assertEqual(self.cotizacion.vehiculo_color, 'Azul')
+        self.assertEqual(self.cotizacion.plazo, '30 días')
+        self.assertEqual(self.cotizacion.tecnico, 'Luis Mamani')
+        self.assertEqual(str(self.cotizacion.costo_estimado), '950.00')
+
+    def test_editar_conserva_numero(self):
+        numero_original = self.cotizacion.numero
+        self.client.post(
+            f'/cotizaciones/{self.cotizacion.pk}/editar/',
+            self._datos_edicion(),
+        )
+        self.cotizacion.refresh_from_db()
+        self.assertEqual(self.cotizacion.numero, numero_original)
+
+    def test_editar_placa_se_guarda_en_mayusculas(self):
+        self.client.post(
+            f'/cotizaciones/{self.cotizacion.pk}/editar/',
+            self._datos_edicion(vehiculo_placa='abcd123'),
+        )
+        self.cotizacion.refresh_from_db()
+        self.assertEqual(self.cotizacion.vehiculo_placa, 'ABCD123')
+
+    def test_editar_muestra_errores_si_falta_campo(self):
+        datos = self._datos_edicion(cliente_nombre='')
+        response = self.client.post(
+            f'/cotizaciones/{self.cotizacion.pk}/editar/', datos)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'invalid-feedback')
+        self.cotizacion.refresh_from_db()
+        self.assertEqual(self.cotizacion.cliente_nombre, 'Juan Pérez')
+
+    def test_editar_requiere_login(self):
+        self.client.logout()
+        response = self.client.get(f'/cotizaciones/{self.cotizacion.pk}/editar/')
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/login', response.url)

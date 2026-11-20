@@ -25,3 +25,12 @@ class CotizacionForm(forms.ModelForm):
             'costo_estimado':   forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': '0.00'}),
             'notas':            forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Términos, condiciones, garantía...'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Marca con is-invalid los campos que fallaron la validación
+        if self.is_bound:
+            for nombre, campo in self.fields.items():
+                if self.errors.get(nombre):
+                    clases = campo.widget.attrs.get('class', '')
+                    campo.widget.attrs['class'] = f'{clases} is-invalid'.strip()

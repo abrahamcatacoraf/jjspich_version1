@@ -11,21 +11,31 @@
         <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>{{ titulo }}</h5>
       </div>
       <div class="card-body p-4">
-        <form method="post">
+        <form method="post" novalidate>
           {% csrf_token %}
+
+          {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+          </div>
+          {% endif %}
+
           <div class="row g-3">
 
             <div class="col-md-4">
               <label class="form-label">Fecha de emisión</label>
               {{ form.fecha }}
+              {% for error in form.fecha.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-md-4">
               <label class="form-label">Plazo de validez</label>
               {{ form.plazo }}
+              {% for error in form.plazo.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-md-4">
               <label class="form-label">Técnico</label>
               {{ form.tecnico }}
+              {% for error in form.tecnico.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
 
             <div class="col-12">
@@ -36,6 +46,7 @@
             <div class="col-md-12">
               <label class="form-label">Nombre del cliente</label>
               {{ form.cliente_nombre }}
+              {% for error in form.cliente_nombre.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
 
             <div class="col-12">
@@ -46,22 +57,27 @@
             <div class="col-md-4">
               <label class="form-label">Marca</label>
               {{ form.vehiculo_marca }}
+              {% for error in form.vehiculo_marca.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-md-4">
               <label class="form-label">Modelo</label>
               {{ form.vehiculo_modelo }}
+              {% for error in form.vehiculo_modelo.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-md-4">
               <label class="form-label">Placa</label>
               {{ form.vehiculo_placa }}
+              {% for error in form.vehiculo_placa.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-md-6">
               <label class="form-label">Color</label>
               {{ form.vehiculo_color }}
+              {% for error in form.vehiculo_color.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-md-6">
               <label class="form-label">Año</label>
               {{ form.vehiculo_anio }}
+              {% for error in form.vehiculo_anio.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
 
             <div class="col-12">
@@ -72,14 +88,17 @@
             <div class="col-12">
               <label class="form-label">Diagnóstico técnico</label>
               {{ form.diagnostico }}
+              {% for error in form.diagnostico.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-md-6">
               <label class="form-label">Costo estimado (Bs.)</label>
               {{ form.costo_estimado }}
+              {% for error in form.costo_estimado.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-md-6">
               <label class="form-label">Notas adicionales</label>
               {{ form.notas }}
+              {% for error in form.notas.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
 
           </div>
