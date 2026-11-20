@@ -12,6 +12,10 @@ class Cotizacion(models.Model):
                              help_text='Ej: 15 días, 30 días')
     tecnico = models.CharField(max_length=100, verbose_name='Técnico')
     cliente_nombre = models.CharField(max_length=200, verbose_name='Cliente')
+    cliente_telefono = models.CharField(
+        max_length=20, blank=True, null=True,
+        verbose_name='Teléfono del cliente',
+        help_text='Opcional. Se usa para compartir por WhatsApp.')
     vehiculo_marca = models.CharField(max_length=50, verbose_name='Marca')
     vehiculo_modelo = models.CharField(max_length=50, verbose_name='Modelo')
     vehiculo_placa = models.CharField(max_length=20, verbose_name='Placa')

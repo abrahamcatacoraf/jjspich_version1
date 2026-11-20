@@ -1,0 +1,79 @@
+{{ whatsapp.mensaje|json_script:"mensaje-whatsapp" }}
+<script>
+(function () {
+  const mensajeEl = document.getElementById('mensaje-whatsapp');
+  const mensaje = mensajeEl ? JSON.parse(mensajeEl.textContent) : '';
+  let promesaPdf = null;
+
+  function obtenerPdf(boton) {
+    if (!promesaPdf) {
+      promesaPdf = fetch(boton.dataset.pdfUrl, { credentials: 'same-origin' })
+        .then(function (respuesta) {
+          if (!respuesta.ok) throw new Error('No se pudo generar el PDF');
+          return respuesta.blob();
+        });
+    }
+    return promesaPdf;
+  }
+
+  function avisoSinTelefono() {
+    alert('Esta cotización no tiene número de teléfono. ' +
+          'Debe agregarse un número en Editar para continuar.');
+  }
+
+  async function compartir(boton) {
+    const telefono = (boton.dataset.telefono || '').trim();
+    if (!telefono) {
+      avisoSinTelefono();
+      return;
+    }
+    const numero = boton.dataset.numero || 'cotizacion';
+    boton.disabled = true;
+    try {
+      const blob = await obtenerPdf(boton);
+      const archivo = new File([blob], 'cotizacion_' + numero + '.pdf',
+                                { type: 'application/pdf' });
+
+      // Móvil / PWA: comparte el PDF adjunto
+      if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+        await navigator.share({
+          files: [archivo],
+          title: 'Cotización ' + numero,
+          text: mensaje,
+        });
+        return;
+      }
+      // Navegadores con Web Share sin archivos
+      if (navigator.share) {
+        await navigator.share({ title: 'Cotización ' + numero, text: mensaje });
+        return;
+      }
+      // Escritorio: descarga el PDF y abre WhatsApp Web con el mensaje
+      const enlace = document.createElement('a');
+      enlace.href = URL.createObjectURL(blob);
+      enlace.download = 'cotizacion_' + numero + '.pdf';
+      document.body.appendChild(enlace);
+      enlace.click();
+      enlace.remove();
+      if (boton.dataset.waUrl) window.open(boton.dataset.waUrl, '_blank');
+    } catch (error) {
+      if (error && error.name === 'AbortError') return;
+      if (boton.dataset.waUrl) {
+        window.open(boton.dataset.waUrl, '_blank');
+      } else {
+        alert('No se pudo compartir la cotización. Intente nuevamente.');
+      }
+    } finally {
+      boton.disabled = false;
+    }
+  }
+
+  document.querySelectorAll('.btn-compartir').forEach(function (boton) {
+    boton.addEventListener('click', function () { compartir(boton); });
+    // Pre-carga el PDF para que el menú de compartir abra de inmediato (iOS)
+    if ((boton.dataset.telefono || '').trim()) {
+      obtenerPdf(boton).catch(function () {});
+    }
+  });
+})();
+</script>

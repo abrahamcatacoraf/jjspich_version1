@@ -1,10 +1,14 @@
 from datetime import date
+from unittest import mock
 
 from django.contrib.auth.models import Group, User
+from django.core import signing
 from django.core.management import call_command
 from django.test import TestCase
 
 from .models import Cotizacion
+from .telefono import normalizar_telefono
+from .views import PDF_TOKEN_SALT
 
 
 class CotizacionModelTest(TestCase):
@@ -90,6 +94,7 @@ class CotizacionViewTest(TestCase):
             'plazo': '30 días',
             'tecnico': 'Luis Mamani',
             'cliente_nombre': 'Juan Pérez Actualizado',
+            'cliente_telefono': '',
             'vehiculo_marca': 'Toyota',
             'vehiculo_modelo': 'Corolla',
             'vehiculo_placa': '1234ABC',
@@ -151,3 +156,77 @@ class CotizacionViewTest(TestCase):
         response = self.client.get(f'/cotizaciones/{self.cotizacion.pk}/editar/')
         self.assertEqual(response.status_code, 302)
         self.assertIn('/login', response.url)
+
+    def test_compartir_sin_telefono_no_genera_enlace(self):
+        response = self.client.get(f'/cotizaciones/{self.cotizacion.pk}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['whatsapp']['telefono'], '')
+        self.assertEqual(response.context['whatsapp']['wa_url'], '')
+
+    def test_compartir_con_telefono_normaliza_y_genera_enlace(self):
+        self.cotizacion.cliente_telefono = '72543915'
+        self.cotizacion.save()
+        response = self.client.get(f'/cotizaciones/{self.cotizacion.pk}/')
+        self.assertEqual(response.context['whatsapp']['telefono'], '59172543915')
+        self.assertIn('wa.me/59172543915', response.context['whatsapp']['wa_url'])
+
+    def test_detalle_muestra_boton_compartir(self):
+        response = self.client.get(f'/cotizaciones/{self.cotizacion.pk}/')
+        self.assertContains(response, 'Compartir')
+        self.assertContains(response, 'btn-compartir')
+
+    def test_preview_muestra_boton_compartir(self):
+        response = self.client.get(f'/cotizaciones/{self.cotizacion.pk}/preview/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'btn-compartir')
+        self.assertContains(response, 'mensaje-whatsapp')
+
+    def test_editar_guarda_telefono(self):
+        self.client.post(
+            f'/cotizaciones/{self.cotizacion.pk}/editar/',
+            self._datos_edicion(cliente_telefono='+591 72543915'),
+        )
+        self.cotizacion.refresh_from_db()
+        self.assertEqual(self.cotizacion.cliente_telefono, '+591 72543915')
+
+    def test_telefono_opcional_al_editar(self):
+        self.client.post(
+            f'/cotizaciones/{self.cotizacion.pk}/editar/',
+            self._datos_edicion(cliente_telefono=''),
+        )
+        self.cotizacion.refresh_from_db()
+        self.assertFalse(self.cotizacion.cliente_telefono)
+
+    def test_pdf_publico_token_valido_sin_login(self):
+        token = signing.dumps(self.cotizacion.pk, salt=PDF_TOKEN_SALT, compress=True)
+        self.client.logout()
+        response = self.client.get(f'/cotizaciones/pdf-publico/{token}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+
+    def test_pdf_publico_token_invalido(self):
+        response = self.client.get('/cotizaciones/pdf-publico/token-invalido/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_pdf_publico_token_expirado(self):
+        token = signing.dumps(self.cotizacion.pk, salt=PDF_TOKEN_SALT, compress=True)
+        with mock.patch('cotizaciones.views.PDF_TOKEN_MAX_AGE', -1):
+            response = self.client.get(f'/cotizaciones/pdf-publico/{token}/')
+        self.assertEqual(response.status_code, 404)
+
+
+class TelefonoTest(TestCase):
+
+    def test_normaliza_numero_local(self):
+        self.assertEqual(normalizar_telefono('72543915'), '59172543915')
+
+    def test_respeta_codigo_de_pais(self):
+        self.assertEqual(normalizar_telefono('59172543915'), '59172543915')
+        self.assertEqual(normalizar_telefono('+591 725-439-15'), '59172543915')
+
+    def test_quita_ceros_iniciales(self):
+        self.assertEqual(normalizar_telefono('072543915'), '59172543915')
+
+    def test_vacio(self):
+        self.assertEqual(normalizar_telefono(''), '')
+        self.assertEqual(normalizar_telefono(None), '')

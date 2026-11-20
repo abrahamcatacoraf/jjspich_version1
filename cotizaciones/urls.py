@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.lista_cotizaciones, name='lista_cotizaciones'),
     path('nueva/', views.nueva_cotizacion, name='nueva_cotizacion'),
+    path('pdf-publico/<str:token>/', views.pdf_cotizacion_publico, name='pdf_cotizacion_publico'),
     path('<int:pk>/', views.detalle_cotizacion, name='detalle_cotizacion'),
     path('<int:pk>/pdf/', views.pdf_cotizacion, name='pdf_cotizacion'),
     path('<int:pk>/preview/', views.preview_cotizacion, name='preview_cotizacion'),

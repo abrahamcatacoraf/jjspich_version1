@@ -7,6 +7,7 @@ class CotizacionForm(forms.ModelForm):
         model = Cotizacion
         fields = [
             'fecha', 'plazo', 'tecnico', 'cliente_nombre',
+            'cliente_telefono',
             'vehiculo_marca', 'vehiculo_modelo', 'vehiculo_placa',
             'vehiculo_color', 'vehiculo_anio', 'diagnostico',
             'costo_estimado', 'notas',
@@ -16,6 +17,7 @@ class CotizacionForm(forms.ModelForm):
             'plazo':            forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 15 días'}),
             'tecnico':          forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del técnico'}),
             'cliente_nombre':   forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre completo del cliente'}),
+            'cliente_telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 72543915', 'inputmode': 'tel'}),
             'vehiculo_marca':   forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Toyota'}),
             'vehiculo_modelo':  forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Corolla'}),
             'vehiculo_placa':   forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 1234ABC', 'style': 'text-transform:uppercase'}),
